@@ -3,6 +3,10 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib import messages
 from .models import CustomUser
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Company
+
 
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -46,3 +50,33 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('login')  # Redirect to the login page after logout
+
+
+
+
+
+
+@login_required
+def add_company(request):
+    if request.method == 'POST':
+        company_name = request.POST.get('company_name')
+        company_address = request.POST.get('company_address')
+        company_contact = request.POST.get('company_contact')
+        gst_number = request.POST.get('gst_number')
+
+        if company_name and company_address and company_contact and gst_number:
+            Company.objects.create(
+                company_name=company_name,
+                company_address=company_address,
+                company_contact=company_contact,
+                gst_number=gst_number,
+                user=request.user
+            )
+            return redirect('companyList')  # Redirect to a company list page or wherever appropriate
+    return render(request, 'admin/add_company.html')
+
+def companyList(request):
+    companies = Company.objects.filter(user=request.user)
+    return render(request, 'admin/companyList.html', {'companies': companies})
+
+

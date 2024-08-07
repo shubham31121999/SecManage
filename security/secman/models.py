@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth import get_user_model
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -88,3 +89,15 @@ class CustomUser(AbstractUser):
 
 #     def __str__(self):
 #         return f'{self.first_name} {self.last_name}'
+
+
+
+class Company(models.Model):
+    company_name = models.CharField(max_length=255, unique=True)
+    company_address = models.TextField()
+    company_contact = models.CharField(max_length=15)
+    gst_number = models.CharField(max_length=15, unique=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='companies')
+
+    def __str__(self):
+        return self.company_name
