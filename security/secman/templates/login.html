@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <title>Modern Login Page | AsmrProg</title>
+    <title>SGMS</title>
 </head>
 
 <style>
@@ -85,6 +86,7 @@ body {
     flex-direction: column;
     padding: 0 40px;
     height: 100%;
+    position: relative;
 }
 
 .container input {
@@ -221,18 +223,30 @@ body {
     transform: translateX(200%);
 }
 
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px; /* Adjust as needed */
+    height: auto;
+}
+
+
 </style>
 
 <body>
+    {% load static %}
     <div class="container" id="container">
         <div class="form-container sign-up">
-            
+           
         </div>
         <div class="form-container sign-in">
             <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
+                <!-- <img src="{% static 'security/secman/static/imgs/file.png' %}" alt="Logo" class="logo"> -->
                 <h1>Sign In</h1>
-                
+               
                 <span>or use your email for login</span>
                 {% if messages %}
                     {% for message in messages %}
@@ -247,15 +261,12 @@ body {
         </div>
         <div class="toggle-container">
             <div class="toggle">
-                <div class="toggle-panel toggle-left">
-                    
-                </div>
-                
+               
             </div>
         </div>
     </div>
 
-    
+   
 </body>
 
 </html>
