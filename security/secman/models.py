@@ -1,7 +1,5 @@
 from django.db import models
-
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -30,7 +28,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
         (1, 'superuser'),
-        (2, 'admin'),
+        (2, 'Main'),
         (3, 'field_officer'),
         (4, 'company'),
     )
@@ -38,6 +36,15 @@ class CustomUser(AbstractUser):
     
     objects = CustomUserManager()
 
+class MainProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField()
+    password = models.CharField(max_length=128)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
 
 class CompanyProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 4})
@@ -50,11 +57,11 @@ class CompanyProfile(models.Model):
 
 class FieldOfficer(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 3})
-    first_name = models.TextField(max_length=30)
-    last_name = models.TextField(max_length=30)
-    email = models.EmailField(max_length=30)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField()
     age = models.IntegerField()
     gender = models.CharField(max_length=10)
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f'{self.first_name} {self.last_name}'
