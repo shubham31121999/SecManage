@@ -40,10 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'secman',
-    'secman.apps.SecmanConfig',
+    'secman',
+    
     
 ]
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+
 ]
 
 # Redirect settings
@@ -133,7 +138,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'secman.CustomUser'
-
+AUTHENTICATION_BACKENDS = [
+    'secman.backends.EmailBackend',  
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 
 from config.settings.celery import *

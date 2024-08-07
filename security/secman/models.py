@@ -33,35 +33,58 @@ class CustomUser(AbstractUser):
         (4, 'company'),
     )
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
-    
-    objects = CustomUserManager()
-
-class MainProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user_id = models.CharField(max_length=20,unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
-class CompanyProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 4})
-    name = models.CharField(max_length=255)
-    address = models.TextField()
-    logo = models.ImageField(upload_to='company_logos/')
+    objects = CustomUserManager()
+    
+    
+# class Company(AbstractUser):
+    
+#     user_type = models.OneToOneField(choices=CustomUser.USER_TYPE_CHOICES, on_delete=models.CASCADE)
+#     user_id = models.CharField(max_length=20,unique=True)
+#     first_name = models.CharField(max_length=30)
+#     last_name = models.CharField(max_length=30)
+#     email = models.EmailField(unique=True)
+#     password = models.CharField(max_length=128)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return f'{self.first_name} {self.last_name}'
 
-class FieldOfficer(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 3})
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    email = models.EmailField()
-    age = models.IntegerField()
-    gender = models.CharField(max_length=10)
+#     objects = CustomUserManager()
 
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+# class MainProfile(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+#     first_name = models.CharField(max_length=30)
+#     last_name = models.CharField(max_length=30)
+#     email = models.EmailField()
+#     password = models.CharField(max_length=128)
+
+#     def __str__(self):
+#         return f'{self.first_name} {self.last_name}'
+
+# class CompanyProfile(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 4})
+#     name = models.CharField(max_length=255)
+#     address = models.TextField()
+#     logo = models.ImageField(upload_to='company_logos/')
+
+#     def __str__(self):
+#         return self.name
+
+# class FieldOfficer(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 3})
+#     first_name = models.CharField(max_length=30)
+#     last_name = models.CharField(max_length=30)
+#     email = models.EmailField()
+#     age = models.IntegerField()
+#     gender = models.CharField(max_length=10)
+
+#     def __str__(self):
+#         return f'{self.first_name} {self.last_name}'
