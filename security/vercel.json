@@ -20,7 +20,7 @@
       },
       {
         "src": "/(.*)",
-        "dest": "config/wsgi.py"
+        "dest": "manage.py"
       }
     ]
   }
