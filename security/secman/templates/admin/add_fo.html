@@ -21,17 +21,11 @@
         }
 
         .card h1 {
-            /* margin-top: 0;
-            color: #333;
             text-align: center;
-            font-size: 24px;
-            animation: slideIn 1s ease-in-out; */
-
-              text-align: center;
-        color: #333333;
-        font-size: 2.5em;
-        margin-bottom: 20px;
-        animation: slideIn 1s ease-in-out;
+            color: #333333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
         }
 
         form {
@@ -58,6 +52,8 @@
         }
 
         input[type="text"],
+        input[type="email"],
+        input[type="password"],
         textarea {
             padding: 10px;
             border: 1px solid #ccc;
@@ -69,6 +65,8 @@
         }
 
         input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
         textarea:focus {
             border-color: #312929;
             outline: none;
@@ -95,8 +93,6 @@
         button:active {
             background-color: #2e3741;
         }
-
-    
     </style>
 </head>
 
@@ -106,23 +102,23 @@
         <form method="POST">
             {% csrf_token %}
             <label for="email">Email:</label>
-            <input type="email" name="email" required><br><br>
-    
+            <input type="email" id="email" name="email" required>
+
             <label for="password">Password:</label>
-            <input type="password" name="password" required><br><br>
-    
+            <input type="password" id="password" name="password" required>
+
             <label for="first_name">First Name:</label>
-            <input type="text" name="first_name" required><br><br>
-    
+            <input type="text" id="first_name" name="first_name" required>
+
             <label for="last_name">Last Name:</label>
-            <input type="text" name="last_name" required><br><br>
-    
+            <input type="text" id="last_name" name="last_name" required>
+
             <label for="contact">Contact Number:</label>
-            <input type="text" name="contact" required><br><br>
-    
+            <input type="text" id="contact" name="contact" required>
+
             <label for="gst_or_emergency">GST/Emergency Contact:</label>
-            <input type="text" name="gst_or_emergency" required><br><br>
-    
+            <input type="text" id="gst_or_emergency" name="gst_or_emergency" required>
+
             <button type="submit">Register</button>
         </form>
     </div>

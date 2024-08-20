@@ -7,7 +7,25 @@
         text-align: center;
         margin-bottom: 20px;
     }
-    
+
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+
+    .card h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
@@ -15,7 +33,7 @@
     }
 
     thead {
-        background-color: #007bff;
+        background-color: #333333;
         color: white;
     }
 
@@ -42,7 +60,20 @@
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        
     }
+
+    input[type="date"]:hover, select:hover {
+    border-color: #333333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
+
+    
 
     input[readonly] {
         background-color: #e9ecef;
@@ -51,18 +82,20 @@
     }
 
     button {
-        background-color: #007bff;
+        background-color: #333333;
         color: white;
         border: none;
         padding: 10px 20px;
         border-radius: 4px;
         cursor: pointer;
         font-size: 16px;
-    }
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        }
 
-    button:hover {
-        background-color: #0056b3;
-    }
+        button:hover {
+            background-color: #000000;
+            transform: scale(1.05);
+        }
 
     .popup {
         position: fixed;
@@ -80,14 +113,62 @@
     .popup.error {
         background-color: #dc3545;
     }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .form-row > div {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .form-row > div:last-child {
+        margin-right: 0;
+    }
+
+    .form-row label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-row input, .form-row select {
+        width: 100%;
+    }
+
+     @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    } 
 </style>
 
-<div class="container">
+<div class="card">
     <h1>Mark Attendance</h1>
     <form method="post" action="{% url 'markattendance' %}" id="attendance-form">
         {% csrf_token %}
-        <label for="date">Select Date:</label>
-        <input type="date" id="date" name="date" required>
+
+        <div class="form-row">
+            <div>
+                <label for="date">Select Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div>
+                <label for="company">Company:</label>
+                <select id="company" name="company" required>
+                    <option value="">Select Company</option>
+                    {% for company in companies %}
+                        <option value="{{ company.id }}">{{ company.user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
 
         <table>
             <thead>
@@ -109,7 +190,7 @@
                         <select name="status_{{ employee.id }}" required>
                             <option value="P">Present</option>
                             <option value="A">Absent</option>
-                            <option value="L">Leave</option>
+                            <!-- <option value="L">Leave</option> -->
                             <option value="H">Holiday</option>
                         </select>
                     </td>
@@ -206,5 +287,5 @@
         }
     });
 </script>
-    
+
 {% endblock content %}

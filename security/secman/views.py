@@ -1165,7 +1165,9 @@ def fo_attendance(request):
 def markattendance(request):
     if request.method == 'GET':
         employees = EmployeeJoining.objects.all()
-        return render(request, 'FO/markattendance.html', {'employees': employees})
+        companies = UserProfile.objects.filter(user_type='company')
+        return render(request, 'FO/markattendance.html', {'employees': employees, 'companies': companies})
+
 
 
 
