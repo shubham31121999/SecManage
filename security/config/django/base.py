@@ -27,7 +27,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG",default=True)
 
-ALLOWED_HOSTS = ['sec-manage-qqc5rif9p-shubhams-projects-508dfe81.vercel.app', 'sec-manage.vercel.app']
+ALLOWED_HOSTS = ['sec-manage-qqc5rif9p-shubhams-projects-508dfe81.vercel.app', 'security.vercel.app',"*"]
 
 
 
