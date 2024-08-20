@@ -1,12 +1,21 @@
 from django.contrib import admin
-from .models import CustomUser , Company
+
+from django.contrib.auth.models import User
 
 
-# class MainProfileAdmin(admin.ModelAdmin):
-#     form = MainProfileForm
 
-# admin.site.register(MainProfile, MainProfileAdmin)
-admin.site.register(CustomUser)
-admin.site.register(Company)
-# admin.site.register(CompanyProfile)
-# admin.site.register(FieldOfficer)
+
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import UserProfile
+from django import forms
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+
+class CustomUserAdmin(UserAdmin):
+    inlines = (UserProfileInline,)
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)

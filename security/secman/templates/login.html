@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <title>Modern Login Page | AsmrProg</title>
+    <title>SGMS</title>
 </head>
 
 <style>
@@ -85,6 +86,7 @@ body {
     flex-direction: column;
     padding: 0 40px;
     height: 100%;
+    position: relative;
 }
 
 .container input {
@@ -162,6 +164,7 @@ body {
     width: 50%;
     height: 100%;
     overflow: hidden;
+    background-color: #312929;
     transition: all 0.6s ease-in-out;
     border-radius: 150px 0 0 100px;
     z-index: 1000;
@@ -221,18 +224,97 @@ body {
     transform: translateX(200%);
 }
 
+/* Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+/* Card Styles */
+.card {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff00;
+  border-radius: 10px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  margin: 80px auto;
+}
+
+/* Logo Styles */
+.logo {
+  max-width: 240%;
+  max-height: 240%;
+  object-fit: contain;
+  justify-content: center;
+  align-items: center;
+  margin: 90px 0px 75px -175px;
+}
+
+.logo1 {
+  max-width: 240%;
+  max-height: 240%;
+  object-fit: contain;
+  justify-content: center;
+  align-items: center;
+  margin: 90px 0px 75px 175px;
+}
+
+        h1 {
+            color: #34495e;
+            font-size: 3.0rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        h3 {
+            color: #34495e;
+            font-size: 1.25rem;
+            margin: 10px 0;
+            font-weight: 400;
+        }
+        
+        h3 strong {
+            color: #34495e;
+            font-weight: 700;
+        }
+        
+        form h3:last-of-type {
+            font-size: 1.2rem;
+            color: #000000;
+            margin-top: 20px;
+            align-items: center;
+        }
+ 
+
+
+
 </style>
 
 <body>
+    {% load static %}
     <div class="container" id="container">
-        <div class="form-container sign-up">
-            
-        </div>
+        <div class="container" id="container">
+            <div class="form-container sign-up">
+                <form>
+                    <h1>VS GROUP</h1>
+                    <h3><strong>Best Security Services</strong></h3><br>
+                    <h3><strong>Total Protection</strong></h3>
+                    <h3>आपली सुरक्षा, आमची प्राथमिकता.</h3>
+                    
+                    
+                </form>
+            </div>
         <div class="form-container sign-in">
-            <form method="post" action="{% url 'login' %}">
+            <form method="POST">
                 {% csrf_token %}
-                <h1>Sign In</h1>
                 
+                <h1>Sign In</h1>
+               
                 <span>or use your email for login</span>
                 {% if messages %}
                     {% for message in messages %}
@@ -246,16 +328,31 @@ body {
             </form>
         </div>
         <div class="toggle-container">
-            <div class="toggle">
-                <div class="toggle-panel toggle-left">
-                    
-                </div>
-                
+            <div class="toggle-panel toggle-left">
+                <img src="{% static './imgs/logo1.png' %}" alt="Logo" class="logo1" id="login">
+            </div>
+            <div class="toggle-panel toggle-right">
+                <img src="{% static './imgs/logo.png' %}" alt="Logo" class="logo" id="register">
+                <!-- <button class="hidden" id="register">Sign Up</button> -->
             </div>
         </div>
+        
     </div>
 
-    
+   <script>
+    const container = document.getElementById('container');
+    const registerBtn = document.getElementById('register');
+    const loginBtn = document.getElementById('login');
+
+    registerBtn.addEventListener('click', () => {
+        container.classList.add("active");
+    });
+
+    loginBtn.addEventListener('click', () => {
+        container.classList.remove("active");
+    });
+   </script>
+
 </body>
 
 </html>

@@ -1,0 +1,63 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+<style>
+    
+    h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    thead {
+        background: var(--blue);
+        color: white;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        font-weight: bold;
+    }
+    
+    
+    
+    
+</style>
+
+<body>
+<h1>Shift List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>In Time</th>
+            <th>Out Time</th>
+            <th>Total Time (hrs)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for shift in shifts %}
+        <tr>
+            <td>{{ shift.description }}</td>
+            <td>{{ shift.intime }}</td>
+            <td>{{ shift.outtime }}</td>
+            <td>{{ shift.shift_total_time }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<button href="{% url 'addshift' %}">Create New Shift</button>
+</body>
+
+
+
+
+{% endblock content %}

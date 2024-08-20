@@ -1,0 +1,210 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+<style>
+    h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    thead {
+        background-color: #007bff;
+        color: white;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    input[type="text"], input[type="date"], select {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    input[readonly] {
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        cursor: not-allowed;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: none;
+        z-index: 1000;
+    }
+
+    .popup.error {
+        background-color: #dc3545;
+    }
+</style>
+
+<div class="container">
+    <h1>Mark Attendance</h1>
+    <form method="post" action="{% url 'markattendance' %}" id="attendance-form">
+        {% csrf_token %}
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" required>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Full Name</th>
+                    <th>Status</th>
+                    <th>Shift</th>
+                    <th>Notes</th>
+                    <th>Submit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.emp_id }}</td>
+                    <td>{{ employee.first_name }} {{ employee.middle_name }} {{ employee.last_name }}</td>
+                    <td>
+                        <select name="status_{{ employee.id }}" required>
+                            <option value="P">Present</option>
+                            <option value="A">Absent</option>
+                            <option value="L">Leave</option>
+                            <option value="H">Holiday</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" value="{{ employee.shift.description }}" readonly>
+                        <input type="hidden" name="shift_{{ employee.id }}" value="{{ employee.shift.id }}">
+                        <input type="hidden" name="check_in_time_{{ employee.id }}" value="{{ employee.shift.intime }}">
+                        <input type="hidden" name="check_out_time_{{ employee.id }}" value="{{ employee.shift.outtime }}">
+                    </td>
+                    <td>
+                        <input type="text" name="notes_{{ employee.id }}" maxlength="255">
+                    </td>
+                    <td>
+                        <button type="button" class="submit-employee" data-employee-id="{{ employee.id }}">Submit</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<!-- Success Popup -->
+<div id="success-popup" class="popup">
+    <p>Attendance updated successfully!</p>
+</div>
+
+<!-- Error Popup -->
+<div id="error-popup" class="popup error">
+    <p id="error-message">An error occurred. Please try again.</p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('attendance-form');
+
+        document.querySelectorAll('.submit-employee').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const employeeId = button.getAttribute('data-employee-id');
+                const status = form.querySelector(`select[name="status_${employeeId}"]`).value;
+                const checkInTime = form.querySelector(`input[name="check_in_time_${employeeId}"]`).value;
+                const checkOutTime = form.querySelector(`input[name="check_out_time_${employeeId}"]`).value;
+                const shiftId = form.querySelector(`input[name="shift_${employeeId}"]`).value;
+                const notes = form.querySelector(`input[name="notes_${employeeId}"]`).value;
+
+                if (!form.querySelector('input[name="date"]').value) {
+                    showPopup('error-popup', 'Please select a date.');
+                    return;
+                }
+
+                if (!status) {
+                    showPopup('error-popup', 'Please select an attendance status.');
+                    return;
+                }
+
+                const hiddenForm = document.createElement('form');
+                hiddenForm.method = 'post';
+                hiddenForm.action = "{% url 'submit_attendance' 0 %}".replace('0', employeeId);
+                hiddenForm.style.display = 'none';
+
+                const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+                hiddenForm.innerHTML = `
+                    <input type="hidden" name="date" value="${form.querySelector('input[name="date"]').value}">
+                    <input type="hidden" name="status" value="${status}">
+                    <input type="hidden" name="check_in_time" value="${checkInTime}">
+                    <input type="hidden" name="check_out_time" value="${checkOutTime}">
+                    <input type="hidden" name="shift" value="${shiftId}">
+                    <input type="hidden" name="notes" value="${notes}">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                `;
+                document.body.appendChild(hiddenForm);
+                hiddenForm.submit();
+            });
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+    
+        if (urlParams.has('success')) {
+            showPopup('success-popup', 'Attendance updated successfully!');
+        } else if (urlParams.has('error')) {
+            const errorMessage = urlParams.get('error');
+            showPopup('error-popup', errorMessage || 'An error occurred. Please try again.');
+        }
+
+        function showPopup(id, message) {
+            const popup = document.getElementById(id);
+            popup.querySelector('p').textContent = message;
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.style.display = 'none';
+                // Remove the URL parameter after displaying the popup
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }, 3000);
+        }
+    });
+</script>
+    
+{% endblock content %}

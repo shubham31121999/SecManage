@@ -27,13 +27,12 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG",default=True)
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['security.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,12 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'secman',
-    
-    
 ]
-
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,13 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-
 ]
-
-# Redirect settings
-LOGIN_REDIRECT_URL = 'dashboard'
-LOGOUT_REDIRECT_URL = 'login'
 
 ROOT_URLCONF = 'config.urls'
 
@@ -132,16 +120,19 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # This line might be unnecessary if you're not using a 'static' directory within your project
+    './security/secman/static',  # Make sure the path is correct
+    os.path.join(BASE_DIR, 'node_modules') # path for full calendar
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'secman.CustomUser'
-AUTHENTICATION_BACKENDS = [
-    'secman.backends.EmailBackend',  
-    'django.contrib.auth.backends.ModelBackend',
-]
+
+
 
 
 from config.settings.celery import *

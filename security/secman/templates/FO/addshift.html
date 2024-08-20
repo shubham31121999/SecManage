@@ -1,0 +1,159 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+
+
+<style>
+    
+    .card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+    }
+    .form-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .form-group div {
+        flex: 1;
+    }
+    input[type="time"],
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensure padding is included in the width */
+    }
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: none;
+        z-index: 1000;
+    }
+    .popup.error {
+        background-color: #dc3545;
+    }
+    .popup .close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>Create a New Shift</h1>
+        <form method="post" action="{% url 'addshift' %}" id="shift-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <div>
+                    <label for="intime">In Time:</label>
+                    <input type="time" id="intime" name="intime" required>
+                </div>
+                <div>
+                    <label for="outtime">Out Time:</label>
+                    <input type="time" id="outtime" name="outtime" required>
+                </div>
+            </div>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" maxlength="255" required>
+
+            <button type="submit">Create Shift</button>
+        </form>
+    </div>
+</div>
+
+<!-- Success Popup -->
+<div id="success-popup" class="popup">
+    <p>Shift created successfully!</p>
+    <button class="close">&times;</button>
+</div>
+
+<!-- Error Popup -->
+<div id="error-popup" class="popup error">
+    <p id="error-message">An error occurred. Please try again.</p>
+    <button class="close">&times;</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('shift-form');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Simulate form submission
+            setTimeout(function() {
+                // Simulate a successful response
+                showPopup('success-popup');
+
+                // Reset form after submission
+                form.reset();
+            }, 1000);
+        });
+
+        // Close popups automatically after a few seconds
+        function showPopup(id) {
+            const popup = document.getElementById(id);
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 3000); // Hide popup after 3 seconds
+        }
+
+        // Close popup on button click
+        document.querySelectorAll('.popup .close').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+    });
+</script>
+</body>
+
+
+
+
+
+{% endblock content %}

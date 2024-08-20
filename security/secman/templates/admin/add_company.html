@@ -1,4 +1,4 @@
-{% extends 'admin/basead.html' %}
+    {% extends 'admin/basead.html' %}
 
 {% block content %}
 <head>
@@ -21,10 +21,17 @@
         }
 
         .card h1 {
-            margin-top: 0;
+            /* margin-top: 0;
             color: #333;
             text-align: center;
             font-size: 24px;
+            animation: slideIn 1s ease-in-out; */
+
+              text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
         }
 
         form {
@@ -96,26 +103,27 @@
 <body>
     <div class="card">
         <h1>Add Company</h1>
-        <form method="post">
+        <form method="POST">
             {% csrf_token %}
-            <label for="company_name">Company Name:</label>
-            <input type="text" id="company_name" name="company_name" required>
-
-            <label for="company_address">Company Address:</label>
-            <textarea id="company_address" name="company_address" rows="4" required></textarea>
-
-            <div class="form-group">
-                <div>
-                    <label for="company_contact">Company Contact:</label>
-                    <input type="text" id="company_contact" name="company_contact" required>
-                </div>
-                <div>
-                    <label for="gst_number">GST Number:</label>
-                    <input type="text" id="gst_number" name="gst_number" required>
-                </div>
-            </div>
-
-            <button type="submit">Add Company</button>
+            <label for="email">Email:</label>
+            <input type="email" name="email" required><br><br>
+    
+            <label for="password">Password:</label>
+            <input type="password" name="password" required><br><br>
+    
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" required><br><br>
+    
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" required><br><br>
+    
+            <label for="contact">Contact Number:</label>
+            <input type="text" name="contact" required><br><br>
+    
+            <label for="gst_or_emergency">GST/Emergency Contact:</label>
+            <input type="text" name="gst_or_emergency" required><br><br>
+    
+            <button type="submit">Register</button>
         </form>
     </div>
 </body>

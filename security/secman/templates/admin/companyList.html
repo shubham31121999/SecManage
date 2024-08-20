@@ -8,8 +8,19 @@
         color: #333333;
         font-size: 2.5em;
         margin-bottom: 20px;
-        animation: slideIn 1s ease-in-out;
+        /* animation: slideIn 1s ease-in-out; */
     }
+
+    .card {
+            width: 95%;
+            margin: 2% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
     table {
         width: 95%;
         margin-left: 30px;
@@ -25,7 +36,7 @@
         padding: 20px;
         text-align: left;
         border-bottom: 1px solid #dddddd;
-        transition: background-color 0.3s ease-in-out;
+        /* transition: background-color 0.3s ease-in-out;    */
     }
     th {
         background-color: #312929;
@@ -48,7 +59,7 @@
         height: 2px;
         width: 0;
         background-color: #000000;
-        transition: width 0.4s ease-in-out;
+        /* transition: width 0.4s ease-in-out; */
     }
     td:hover:before {
         width: 100%;
@@ -65,7 +76,7 @@
     tr:last-child td:last-child {
         border-bottom-right-radius: 10px;
     }
-    @keyframes fadeIn {
+    /* @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
     }
@@ -76,11 +87,11 @@
     @keyframes grow {
         from { transform: scale(0.9); opacity: 0; }
         to { transform: scale(1); opacity: 1; }
-    }
+    } */
 </style>
 
 <body>
-    <div class="container">
+    <div class="card">
         <h1>Company List</h1>
         <table>
             <thead>
@@ -94,10 +105,10 @@
             <tbody>
                 {% for company in companies %}
                 <tr>
-                    <td>{{ company.company_name }}</td>
-                    <td>{{ company.company_address }}</td>
-                    <td>{{ company.company_contact }}</td>
-                    <td>{{ company.gst_number }}</td>
+                    <td>{{ company.user.first_name }} </td>
+                    <td>{{ company.user.last_name }}</td>
+                    <td>{{ company.contact }}</td>
+                    <td>{{ company.gst_or_emergency }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

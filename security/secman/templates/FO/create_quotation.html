@@ -1,0 +1,199 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+
+    .card h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .form-group > div {
+        flex: 1;
+    }
+
+    label {
+        font-size: 14px;
+        color: #666;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    select:focus {
+        border-color: #312929;
+        outline: none;
+        box-shadow: 0 0 8px rgba(49, 41, 41, 0.5);
+        transform: scale(1.02);
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #312929;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #000000;
+        transform: scale(1.05);
+    }
+
+    button:active {
+        background-color: #2e3741;
+    }
+
+    .item-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .item-row input, .item-row select {
+        margin-right: 15px;
+        flex: 1;
+    }
+
+    .item-row button {
+        background-color: transparent;
+        border: none;
+        color: #ff6b6b;
+        cursor: pointer;
+        font-size: 20px;
+        transition: color 0.3s ease;
+    }
+
+    .item-row button:hover {
+        color: #ff4757;
+    }
+
+    .add-row-btn, .submit-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        background-color: #0f0f0f;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .add-row-btn:hover, .submit-btn:hover {
+        background-color: #2e2f30;
+    }
+</style>
+
+<body>
+    <div class="card">
+        <h1>Create Quotation</h1>
+        <form action="{% url 'create_quotation' %}" method="POST">
+            {% csrf_token %}
+            <label for="company_name">Company Name:</label>
+            <input type="text" name="company_name" id="company_name" placeholder="Enter Company Name" required>
+
+            <div id="items-container">
+                <div class="item-row">
+                    <input type="number" name="sr_no[]" placeholder="Sr. No." readonly>
+                    <select name="description[]" required>
+                        <option value="" disabled selected>Select Description</option>
+                        <option value="Security Guard (Male)">Security Guard (Male)</option>
+                        <option value="Security Guard (FeMale)">Security Guard (FeMale)</option>
+                        <option value="Security Supervisor (Male)">Security Supervisor (Male)</option>
+                        <option value="Security Supervisor (FeMale)">Security Supervisor (FeMale)</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                    <input type="number" name="price[]" placeholder="Price" step="0.01" required>
+                    <button type="button" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+
+            <button type="button" class="add-row-btn" onclick="addRow()">Add Row</button>
+            <br>
+            <button type="submit" class="submit-btn">Generate Quotation</button>
+        </form>
+    </div>
+</body>
+
+<script>
+    function updateSerialNumbers() {
+        const rows = document.querySelectorAll('.item-row');
+        rows.forEach((row, index) => {
+            row.querySelector('input[name="sr_no[]"]').value = index + 1;
+        });
+    }
+
+    function addRow() {
+        const row = document.querySelector('.item-row').cloneNode(true);
+        row.querySelectorAll('input').forEach(input => input.value = '');
+        document.getElementById('items-container').appendChild(row);
+        updateSerialNumbers();
+    }
+
+    function removeRow(button) {
+        if (document.querySelectorAll('.item-row').length > 1) {
+            button.parentElement.remove();
+            updateSerialNumbers();
+        } else {
+            alert('At least one item row is required.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateSerialNumbers();
+    });
+</script>
+
+{% endblock %}
