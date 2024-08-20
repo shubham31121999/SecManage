@@ -15,3 +15,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.django.local')
 application = get_wsgi_application()
 
 
+app = application
