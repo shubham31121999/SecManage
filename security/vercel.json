@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
       {
-        "src": "production.py",
+        "src": "config/wsgi.py",
         "use": "@vercel/python",
         "config": {
           "maxLambdaSize": "50mb"
@@ -20,7 +20,7 @@
       },
       {
         "src": "/(.*)",
-        "dest": "production.py"
+        "dest": "config/wsgi.py"
       }
     ]
   }
