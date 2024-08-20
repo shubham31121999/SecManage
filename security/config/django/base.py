@@ -27,7 +27,8 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG",default=True)
 
-ALLOWED_HOSTS = ['security.vercel.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'sec-manage-u6f25n6zl-shubhams-projects-508dfe81.vercel.app']
+
 
 
 # Application definition
