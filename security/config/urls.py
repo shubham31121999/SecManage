@@ -33,6 +33,7 @@ urlpatterns = [
     path('shifts/', views.shift_list, name='shift_list'),
     path('markattendance',views.markattendance, name='markattendance'),
     path('markattendance/submit/<int:employee_id>/', views.submit_attendance, name='submit_attendance'),
-    
+    path('submit_attendance/<int:employee_id>/', views.submit_attendance, name='submit_attendance'),
+    path('colist/',views.companyList,name='colist'),
     path('admin/', admin.site.urls),
 ]

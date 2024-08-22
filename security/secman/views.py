@@ -161,18 +161,26 @@ def fo_dashboard(request):
 
 
 
-
-
+#########################################################################################################
 
 def add_company(request):
     if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        contact = request.POST['contact']
-        gst_or_emergency = request.POST['gst_or_emergency']
+        # Debug: Print the POST data to check what is being received
+        print(request.POST)
 
+        # Use get() to safely retrieve form data
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        contact = request.POST.get('contact')
+        gst_or_emergency = request.POST.get('gst_or_emergency')
+
+        # Check if all required fields are provided
+        if not email or not password or not first_name or not last_name:
+            return render(request, 'admin/add_company.html', {'error': 'All fields are required.'})
+
+        # Create the user and user profile
         user = User.objects.create_user(
             username=email,  # Use email as the username
             email=email,
@@ -186,10 +194,42 @@ def add_company(request):
             contact=contact,
             gst_or_emergency=gst_or_emergency,
         )
-        return redirect('dashboard')  # Redirect to login or wherever you need
+        return redirect('dashboard')  # Redirect to the dashboard or another page
 
     return render(request, 'admin/add_company.html')
 
+
+# def add_company(request):
+#     if request.method == "POST":
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         first_name = request.POST['first_name']
+#         last_name = request.POST['last_name']
+#         contact = request.POST['contact']
+#         gst_or_emergency = request.POST['gst_or_emergency']
+
+#         user = User.objects.create_user(
+#             username=email,  # Use email as the username
+#             email=email,
+#             password=password,
+#             first_name=first_name,
+#             last_name=last_name
+#         )
+#         UserProfile.objects.create(
+#             user=user,
+#             user_type='company',
+#             contact=contact,
+#             gst_or_emergency=gst_or_emergency,
+#         )
+#         return redirect('dashboard')  # Redirect to login or wherever you need
+
+#     return render(request, 'admin/add_company.html')
+
+#####################################################################################################################################
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from .models import UserProfile
 
 def add_fo(request):
     if request.method == "POST":
@@ -200,22 +240,59 @@ def add_fo(request):
         contact = request.POST['contact']
         gst_or_emergency = request.POST['gst_or_emergency']
 
-        user = User.objects.create_user(
-            username=email,  # Use email as the username
-            email=email,
-            password=password,
-            first_name=first_name,
-            last_name=last_name
-        )
-        UserProfile.objects.create(
-            user=user,
-            user_type='fo',
-            contact=contact,
-            gst_or_emergency=gst_or_emergency,
-        )
-        return redirect('dashboard')  # Redirect to login or wherever you need
+        try:
+            # Create a new user
+            user = User.objects.create_user(
+                username=email,  # Use email as the username
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
+
+            # Create a user profile linked to the user
+            UserProfile.objects.create(
+                user=user,
+                user_type='fo',  # Assuming 'fo' is the user type for the FO role
+                contact=contact,
+                gst_or_emergency=gst_or_emergency,
+            )
+
+            return redirect('dashboard')  # Redirect to the dashboard after successful creation
+
+        except IntegrityError:
+            # Handle the case where the username (email) is already in use
+            return render(request, 'admin/add_fo.html', {
+                'error': 'A user with this email already exists.'
+            })
 
     return render(request, 'admin/add_fo.html')
+
+# def add_fo(request):
+#     if request.method == "POST":
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         first_name = request.POST['first_name']
+#         last_name = request.POST['last_name']
+#         contact = request.POST['contact']
+#         gst_or_emergency = request.POST['gst_or_emergency']
+
+#         user = User.objects.create_user(
+#             username=email,  # Use email as the username
+#             email=email,
+#             password=password,
+#             first_name=first_name,
+#             last_name=last_name
+#         )
+#         UserProfile.objects.create(
+#             user=user,
+#             user_type='fo',
+#             contact=contact,
+#             gst_or_emergency=gst_or_emergency,
+#         )
+#         return redirect('dashboard')  # Redirect to login or wherever you need
+
+#     return render(request, 'admin/add_fo.html')
 
 def companyList(request):
     companies = UserProfile.objects.filter(user_type='company')
@@ -1161,11 +1238,24 @@ def fo_attendance(request):
     return render(request,'FO/markattendance.html')
 #############################################################################################
 
+##Yash#######
+
+# def markattendance(request):
+#     if request.method == 'GET':
+#         employees = EmployeeJoining.objects.all()
+#         companies = UserProfile.objects.filter(user_type='company')
+#         return render(request, 'FO/markattendance.html', {'employees': employees, 'companies': companies})
 
 def markattendance(request):
-    if request.method == 'GET':
+    company_id = request.GET.get('company_id')
+    if company_id:
+        employees = EmployeeJoining.objects.filter(company__id=company_id)
+    else:
         employees = EmployeeJoining.objects.all()
-        return render(request, 'FO/markattendance.html', {'employees': employees})
+
+    companies = UserProfile.objects.filter(user_type='company')
+    return render(request, 'FO/markattendance.html', {'employees': employees, 'companies': companies})
+
 
 
 
