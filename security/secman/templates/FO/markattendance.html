@@ -176,9 +176,10 @@
                     <th>Employee ID</th>
                     <th>Full Name</th>
                     <th>Status</th>
-                    <th>Shift</th>
+                    <th></th>
                     <th>Notes</th>
                     <th>Submit</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -195,10 +196,14 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" value="{{ employee.shift.description }}" readonly>
-                        <input type="hidden" name="shift_{{ employee.id }}" value="{{ employee.shift.id }}">
-                        <input type="hidden" name="check_in_time_{{ employee.id }}" value="{{ employee.shift.intime }}">
-                        <input type="hidden" name="check_out_time_{{ employee.id }}" value="{{ employee.shift.outtime }}">
+                        <!-- <select name="shift_{{ employee.id }}" required>
+                            <option value="D">Day</option>
+                            <option value="N  ">Nignt</option>
+                        </select> -->
+                        <!-- <input type="text" value="{{ employee.shift.description }}" readonly> -->
+                        <!-- <input type="hidden" name="shift_{{ employee.id }}" value="{{ employee.shift.id }}"> -->
+                        <!-- <input type="hidden" name="check_in_time_{{ employee.id }}" value="{{ employee.shift.intime }}"> -->
+                        <!-- <input type="hidden" name="check_out_time_{{ employee.id }}" value="{{ employee.shift.outtime }}"> -->
                     </td>
                     <td>
                         <input type="text" name="notes_{{ employee.id }}" maxlength="255">
@@ -286,6 +291,29 @@
             }, 3000);
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const companySelect = document.getElementById('company');
+
+    companySelect.addEventListener('change', function() {
+        const companyId = this.value;
+
+        fetch(`{% url 'markattendance' %}?company_id=${companyId}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(data => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'text/html');
+            const newTableBody = doc.querySelector('tbody');
+            document.querySelector('tbody').innerHTML = newTableBody.innerHTML;
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+
 </script>
 
 {% endblock content %}
