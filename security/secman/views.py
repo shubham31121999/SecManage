@@ -68,7 +68,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-from .models import EmployeeJoining, Attendance
+from .models import EmployeeJoining, Attendance,SalaryDetails
 from django.core.exceptions import ValidationError
 
 
@@ -302,165 +302,335 @@ def companyList(request):
 ############################################   Employee Joining Form   #####################################################
 
 
-
-
+from django.db import transaction, IntegrityError
+from django.http import HttpResponse
+from django.core.files.base import ContentFile
 
 def add_employee(request):
     if request.method == 'POST':
-        emp_id = request.POST['emp_id']
-        first_name = request.POST['first_name']
-        middle_name = request.POST.get('middle_name', '')
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        contact_number = request.POST['contact_number']
-        whatsapp_number = request.POST.get('whatsapp_number', '')
-        age = request.POST['age']
-        gender = request.POST['gender']
-        current_address = request.POST['current_address']
-        permanent_address = request.POST['permanent_address']
-        city = request.POST['city']
-        state = request.POST['state']
-        pincode = request.POST['pincode']
-        date_of_birth = request.POST['date_of_birth']
-        emergency_contact1 = request.POST['emergency_contact1']
-        emergency_contact2 = request.POST['emergency_contact2']
-        emergency_contact_relation1 = request.POST['emergency_contact_relation1']
-        emergency_contact_relation2 = request.POST['emergency_contact_relation2']
-        emergency_contact_relation1_address = request.POST['emergency_contact_relation1_address']
-        emergency_contact_relation2_address = request.POST['emergency_contact_relation2_address']
-        pancard = request.POST['pancard']
-        aadhar = request.POST['aadhar']
-        voter = request.POST['voter']
-        security_guard_training = request.POST.get('security_guard_training') == 'yes'
-        job_experience = request.POST.get('job_experience') == 'yes'
-        profile_picture = request.FILES['profile_picture']
-        signature = request.FILES['signature']
-        preferred_work_arrangements = request.POST['preferred_work_arrangements']
-        position = request.POST['position']
-        account_holder_name = request.POST['account_holder_name']
-        bank_name = request.POST['bank_name']
-        bank_account_number = request.POST['bank_account_number']
-        ifsc_code = request.POST['ifsc_code']
-        branch_name = request.POST['branch_name']
-        bank_address = request.POST['bank_address']
-        qualification = request.POST['qualification']
-        experience = request.POST['experience']
-        shift_id = request.POST.get('shift')
-        shift = ShiftTime.objects.get(id=shift_id) if shift_id else None
-
-        # New fields (convert decimal values to integers)
-        basic_salary = int(float(request.POST['basic_salary']) )
-        special_allowance = int(float(request.POST['special_allowance']) )
-        total = int(float(request.POST['total']) )
-        conveyance_allowance = int(float(request.POST['conveyance_allowance']) )
-        education_allowance = int(float(request.POST['education_allowance']) )
-        travelling_allowance = int(float(request.POST['travelling_allowance']) )
-        hours_daily_duty = int(float(request.POST['hours_daily_duty']) )
-        hra = int(float(request.POST['hra']) )
-        pf = int(float(request.POST['pf']))
-        gratuity = int(float(request.POST['gratuity']))
-        leave_with_wages = int(float(request.POST['leave_with_wages']) )
-        esic = int(float(request.POST['esic']) )
-        paid_holiday = int(float(request.POST['paid_holiday']))
-        bonus = int(float(request.POST['bonus']) )
-        uniform = int(float(request.POST['uniform']) )
-        service_charge = int(float(request.POST['service_charge']))
-        
-        
-        
-        
-        total_b = int(float(request.POST['total_b']))
-        total_c = int(float(request.POST['total_c']) )
-        # Retrieve the selected company from the form
-        company_id = request.POST.get('company')
-        company = None
-        if company_id:
-            try:
-                company = UserProfile.objects.get(id=company_id, user_type='company')
-            except UserProfile.DoesNotExist:
-                return render(request, 'FO/employee_form.html', {'error': 'Selected company does not exist or is not valid.'})
-
         try:
-            employee = EmployeeJoining(
-                emp_id=emp_id,
-                first_name=first_name,
-                middle_name=middle_name,
-                last_name=last_name,
-                email=email,
-                contact_number=contact_number,
-                whatsapp_number=whatsapp_number,
-                age=age,
-                gender=gender,
-                current_address=current_address,
-                permanent_address=permanent_address,
-                city=city,
-                state=state,
-                pincode=pincode,
-                security_guard_training=security_guard_training,
-                job_experience=job_experience,
-                profile_picture=profile_picture,
-                date_of_birth=date_of_birth,
-                emergency_contact1=emergency_contact1,
-                emergency_contact2=emergency_contact2,
-                emergency_contact_relation1=emergency_contact_relation1,
-                emergency_contact_relation2=emergency_contact_relation2,
-                emergency_contact_relation1_address=emergency_contact_relation1_address,
-                emergency_contact_relation2_address=emergency_contact_relation2_address,
-                pancard=pancard,
-                aadhar=aadhar,
-                voter=voter,
-                signature=signature,
-                preferred_work_arrangements=preferred_work_arrangements,
-                position=position,
-                account_holder_name=account_holder_name,
-                bank_name=bank_name,
-                bank_account_number=bank_account_number,
-                ifsc_code=ifsc_code,
-                branch_name=branch_name,
-                bank_address=bank_address,
-                qualification=qualification,
-                experience=experience,
-                company=company,  # Assign the selected company to the employee
-                basic_salary=basic_salary,
-                special_allowance=special_allowance,
-                conveyance_allowance=conveyance_allowance,
-                education_allowance=education_allowance,
-                travelling_allowance=travelling_allowance,
-                hours_daily_duty=hours_daily_duty,
-                total=total,
-                hra=hra,
-                pf=pf,
-                gratuity=gratuity,
-                leave_with_wages=leave_with_wages,
-                esic=esic,
-                paid_holiday=paid_holiday,
-                bonus=bonus,
-                uniform=uniform,
-                total_b=total_b,
-                total_c=total_c,
-                service_charge=service_charge,
-                shift=shift,
-            )
-            employee.save()
+            with transaction.atomic():
+                # Employee data
+                emp_id = request.POST['emp_id']
+                first_name = request.POST['first_name']
+                middle_name = request.POST.get('middle_name', '')
+                last_name = request.POST['last_name']
+                email = request.POST['email']
+                contact_number = request.POST['contact_number']
+                whatsapp_number = request.POST.get('whatsapp_number', '')
+                age = request.POST['age']
+                gender = request.POST['gender']
+                current_address = request.POST['current_address']
+                permanent_address = request.POST['permanent_address']
+                city = request.POST['city']
+                state = request.POST['state']
+                pincode = request.POST['pincode']
+                date_of_birth = request.POST['date_of_birth']
+                emergency_contact1 = request.POST['emergency_contact1']
+                emergency_contact2 = request.POST['emergency_contact2']
+                emergency_contact_relation1 = request.POST['emergency_contact_relation1']
+                emergency_contact_relation2 = request.POST['emergency_contact_relation2']
+                emergency_contact_relation1_address = request.POST['emergency_contact_relation1_address']
+                emergency_contact_relation2_address = request.POST['emergency_contact_relation2_address']
+                pancard = request.POST['pancard']
+                aadhar = request.POST['aadhar']
+                voter = request.POST['voter']
+                security_guard_training = request.POST.get('security_guard_training') == 'yes'
+                job_experience = request.POST.get('job_experience') == 'yes'
+                profile_picture = request.FILES['profile_picture']
+                signature = request.FILES['signature']
+                preferred_work_arrangements = request.POST['preferred_work_arrangements']
+                position = request.POST['position']
+                account_holder_name = request.POST['account_holder_name']
+                bank_name = request.POST['bank_name']
+                bank_account_number = request.POST['bank_account_number']
+                ifsc_code = request.POST['ifsc_code']
+                branch_name = request.POST['branch_name']
+                bank_address = request.POST['bank_address']
+                qualification = request.POST['qualification']
+                experience = request.POST['experience']
+                
+                
 
-            # Generate PDF
-            pdf_data = generate_employee_pdf(employee)
+                # Company data
+                company_id = request.POST.get('company')
+                company = None
+                if company_id:
+                    try:
+                        company = UserProfile.objects.get(id=company_id, user_type='company')
+                    except UserProfile.DoesNotExist:
+                        return render(request, 'FO/employee_form.html', {'error': 'Selected company does not exist or is not valid.'})
 
-            # Save PDF to the model instance
-            employee.pdf_file.save(f'{employee.emp_id}_details.pdf', ContentFile(pdf_data))
+                # Create EmployeeJoining instance
+                employee = EmployeeJoining(
+                    emp_id=emp_id,
+                    first_name=first_name,
+                    middle_name=middle_name,
+                    last_name=last_name,
+                    email=email,
+                    contact_number=contact_number,
+                    whatsapp_number=whatsapp_number,
+                    age=age,
+                    gender=gender,
+                    current_address=current_address,
+                    permanent_address=permanent_address,
+                    city=city,
+                    state=state,
+                    pincode=pincode,
+                    security_guard_training=security_guard_training,
+                    job_experience=job_experience,
+                    profile_picture=profile_picture,
+                    date_of_birth=date_of_birth,
+                    emergency_contact1=emergency_contact1,
+                    emergency_contact2=emergency_contact2,
+                    emergency_contact_relation1=emergency_contact_relation1,
+                    emergency_contact_relation2=emergency_contact_relation2,
+                    emergency_contact_relation1_address=emergency_contact_relation1_address,
+                    emergency_contact_relation2_address=emergency_contact_relation2_address,
+                    pancard=pancard,
+                    aadhar=aadhar,
+                    voter=voter,
+                    signature=signature,
+                    preferred_work_arrangements=preferred_work_arrangements,
+                    position=position,
+                    account_holder_name=account_holder_name,
+                    bank_name=bank_name,
+                    bank_account_number=bank_account_number,
+                    ifsc_code=ifsc_code,
+                    branch_name=branch_name,
+                    bank_address=bank_address,
+                    qualification=qualification,
+                    experience=experience,
+                    company=company,
+                    
+                )
+                employee.save()
 
-            # Provide the generated PDF for download
-            response = HttpResponse(pdf_data, content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="{employee.emp_id}_details.pdf"'
+                # Salary details data
+                basic_salary = int(float(request.POST['basic_salary']))
+                special_allowance = int(float(request.POST['special_allowance']))
+                total = int(float(request.POST['total']))
+                conveyance_allowance = int(float(request.POST['conveyance_allowance']))
+                education_allowance = int(float(request.POST['education_allowance']))
+                travelling_allowance = int(float(request.POST['travelling_allowance']))
+                hours_daily_duty = int(float(request.POST['hours_daily_duty']))
+                hra = int(float(request.POST['hra']))
+                pf = int(float(request.POST['pf']))
+                gratuity = int(float(request.POST['gratuity']))
+                leave_with_wages = int(float(request.POST['leave_with_wages']))
+                esic = int(float(request.POST['esic']))
+                paid_holiday = int(float(request.POST['paid_holiday']))
+                bonus = int(float(request.POST['bonus']))
+                uniform = int(float(request.POST['uniform']))
+                service_charge = int(float(request.POST['service_charge']))
+                total_b = int(float(request.POST['total_b']))
+                total_c = int(float(request.POST['total_c']))
+                advance_payment = int(float(request.POST['advance_payment']))
+                food_allowance = int(float(request.POST['food_allowance']))
 
-            return response
+                # Create SalaryDetails instance linked to the employee
+                salary_details = SalaryDetails(
+                    employee=employee,  # Link to the employee instance
+                    basic_salary=basic_salary,
+                    special_allowance=special_allowance,
+                    total=total,
+                    conveyance_allowance=conveyance_allowance,
+                    education_allowance=education_allowance,
+                    travelling_allowance=travelling_allowance,
+                    hours_daily_duty=hours_daily_duty,
+                    hra=hra,
+                    pf=pf,
+                    gratuity=gratuity,
+                    leave_with_wages=leave_with_wages,
+                    esic=esic,
+                    paid_holiday=paid_holiday,
+                    bonus=bonus,
+                    uniform=uniform,
+                    service_charge=service_charge,
+                    total_b=total_b,
+                    total_c=total_c,
+                    advance_payment=advance_payment,
+                    food_allowance=food_allowance,
+                )
+                salary_details.save()
+
+                # Generate PDF
+                pdf_data = generate_employee_pdf(employee)
+
+                # Save PDF to the model instance
+                employee.pdf_file.save(f'{employee.emp_id}_details.pdf', ContentFile(pdf_data))
+
+                # Provide the generated PDF for download
+                response = HttpResponse(pdf_data, content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename="{employee.emp_id}_details.pdf"'
+
+                return response
         except IntegrityError:
             return render(request, 'FO/employee_form.html', {'error': 'Employee ID already exists. Please use a unique Employee ID.'})
 
     # If GET request, render the form with a list of companies
     companies = UserProfile.objects.filter(user_type='company')
-    shifts = ShiftTime.objects.all()
-    return render(request, 'FO/employee_form.html', {'companies': companies,'shifts': shifts})
+    
+    return render(request, 'FO/employee_form.html', {'companies': companies})
+
+
+
+# def add_employee(request):
+#     if request.method == 'POST':
+#         emp_id = request.POST['emp_id']
+#         first_name = request.POST['first_name']
+#         middle_name = request.POST.get('middle_name', '')
+#         last_name = request.POST['last_name']
+#         email = request.POST['email']
+#         contact_number = request.POST['contact_number']
+#         whatsapp_number = request.POST.get('whatsapp_number', '')
+#         age = request.POST['age']
+#         gender = request.POST['gender']
+#         current_address = request.POST['current_address']
+#         permanent_address = request.POST['permanent_address']
+#         city = request.POST['city']
+#         state = request.POST['state']
+#         pincode = request.POST['pincode']
+#         date_of_birth = request.POST['date_of_birth']
+#         emergency_contact1 = request.POST['emergency_contact1']
+#         emergency_contact2 = request.POST['emergency_contact2']
+#         emergency_contact_relation1 = request.POST['emergency_contact_relation1']
+#         emergency_contact_relation2 = request.POST['emergency_contact_relation2']
+#         emergency_contact_relation1_address = request.POST['emergency_contact_relation1_address']
+#         emergency_contact_relation2_address = request.POST['emergency_contact_relation2_address']
+#         pancard = request.POST['pancard']
+#         aadhar = request.POST['aadhar']
+#         voter = request.POST['voter']
+#         security_guard_training = request.POST.get('security_guard_training') == 'yes'
+#         job_experience = request.POST.get('job_experience') == 'yes'
+#         profile_picture = request.FILES['profile_picture']
+#         signature = request.FILES['signature']
+#         preferred_work_arrangements = request.POST['preferred_work_arrangements']
+#         position = request.POST['position']
+#         account_holder_name = request.POST['account_holder_name']
+#         bank_name = request.POST['bank_name']
+#         bank_account_number = request.POST['bank_account_number']
+#         ifsc_code = request.POST['ifsc_code']
+#         branch_name = request.POST['branch_name']
+#         bank_address = request.POST['bank_address']
+#         qualification = request.POST['qualification']
+#         experience = request.POST['experience']
+#         shift_id = request.POST.get('shift')
+#         shift = ShiftTime.objects.get(id=shift_id) if shift_id else None
+
+#         # New fields (convert decimal values to integers)
+#         basic_salary = int(float(request.POST['basic_salary']) )
+#         special_allowance = int(float(request.POST['special_allowance']) )
+#         total = int(float(request.POST['total']) )
+#         conveyance_allowance = int(float(request.POST['conveyance_allowance']) )
+#         education_allowance = int(float(request.POST['education_allowance']) )
+#         travelling_allowance = int(float(request.POST['travelling_allowance']) )
+#         hours_daily_duty = int(float(request.POST['hours_daily_duty']) )
+#         hra = int(float(request.POST['hra']) )
+#         pf = int(float(request.POST['pf']))
+#         gratuity = int(float(request.POST['gratuity']))
+#         leave_with_wages = int(float(request.POST['leave_with_wages']) )
+#         esic = int(float(request.POST['esic']) )
+#         paid_holiday = int(float(request.POST['paid_holiday']))
+#         bonus = int(float(request.POST['bonus']) )
+#         uniform = int(float(request.POST['uniform']) )
+#         service_charge = int(float(request.POST['service_charge']))
+        
+        
+        
+        
+#         total_b = int(float(request.POST['total_b']))
+#         total_c = int(float(request.POST['total_c']) )
+#         # Retrieve the selected company from the form
+#         company_id = request.POST.get('company')
+#         company = None
+#         if company_id:
+#             try:
+#                 company = UserProfile.objects.get(id=company_id, user_type='company')
+#             except UserProfile.DoesNotExist:
+#                 return render(request, 'FO/employee_form.html', {'error': 'Selected company does not exist or is not valid.'})
+
+#         try:
+#             employee = EmployeeJoining(
+#                 emp_id=emp_id,
+#                 first_name=first_name,
+#                 middle_name=middle_name,
+#                 last_name=last_name,
+#                 email=email,
+#                 contact_number=contact_number,
+#                 whatsapp_number=whatsapp_number,
+#                 age=age,
+#                 gender=gender,
+#                 current_address=current_address,
+#                 permanent_address=permanent_address,
+#                 city=city,
+#                 state=state,
+#                 pincode=pincode,
+#                 security_guard_training=security_guard_training,
+#                 job_experience=job_experience,
+#                 profile_picture=profile_picture,
+#                 date_of_birth=date_of_birth,
+#                 emergency_contact1=emergency_contact1,
+#                 emergency_contact2=emergency_contact2,
+#                 emergency_contact_relation1=emergency_contact_relation1,
+#                 emergency_contact_relation2=emergency_contact_relation2,
+#                 emergency_contact_relation1_address=emergency_contact_relation1_address,
+#                 emergency_contact_relation2_address=emergency_contact_relation2_address,
+#                 pancard=pancard,
+#                 aadhar=aadhar,
+#                 voter=voter,
+#                 signature=signature,
+#                 preferred_work_arrangements=preferred_work_arrangements,
+#                 position=position,
+#                 account_holder_name=account_holder_name,
+#                 bank_name=bank_name,
+#                 bank_account_number=bank_account_number,
+#                 ifsc_code=ifsc_code,
+#                 branch_name=branch_name,
+#                 bank_address=bank_address,
+#                 qualification=qualification,
+#                 experience=experience,
+#                 company=company,  # Assign the selected company to the employee
+#                 basic_salary=basic_salary,
+#                 special_allowance=special_allowance,
+#                 conveyance_allowance=conveyance_allowance,
+#                 education_allowance=education_allowance,
+#                 travelling_allowance=travelling_allowance,
+#                 hours_daily_duty=hours_daily_duty,
+#                 total=total,
+#                 hra=hra,
+#                 pf=pf,
+#                 gratuity=gratuity,
+#                 leave_with_wages=leave_with_wages,
+#                 esic=esic,
+#                 paid_holiday=paid_holiday,
+#                 bonus=bonus,
+#                 uniform=uniform,
+#                 total_b=total_b,
+#                 total_c=total_c,
+#                 service_charge=service_charge,
+#                 shift=shift,
+#             )
+#             employee.save()
+
+#             # Generate PDF
+#             pdf_data = generate_employee_pdf(employee)
+
+#             # Save PDF to the model instance
+#             employee.pdf_file.save(f'{employee.emp_id}_details.pdf', ContentFile(pdf_data))
+
+#             # Provide the generated PDF for download
+#             response = HttpResponse(pdf_data, content_type='application/pdf')
+#             response['Content-Disposition'] = f'attachment; filename="{employee.emp_id}_details.pdf"'
+
+#             return response
+#         except IntegrityError:
+#             return render(request, 'FO/employee_form.html', {'error': 'Employee ID already exists. Please use a unique Employee ID.'})
+
+#     # If GET request, render the form with a list of companies
+#     companies = UserProfile.objects.filter(user_type='company')
+#     shifts = ShiftTime.objects.all()
+#     return render(request, 'FO/employee_form.html', {'companies': companies,'shifts': shifts})
 
 
 
@@ -1203,39 +1373,79 @@ def generate_quotation_pdf(company_name, sr_no_list, description_list, price_lis
 
 
 ############################################# FO Attendance ########################################################### 
+# def addshift(request):
+#     if request.method == 'POST':
+#         intime = request.POST.get('intime')
+#         outtime = request.POST.get('outtime')
+#         description = request.POST.get('description')
+
+#         # Convert intime and outtime to datetime objects
+#         intime_dt = datetime.strptime(intime, '%H:%M')
+#         outtime_dt = datetime.strptime(outtime, '%H:%M')
+
+#         # Calculate total time in hours
+#         time_difference = outtime_dt - intime_dt
+#         shift_total_time = abs(time_difference.total_seconds()) / 3600
+
+#         # Create a new ShiftTime object and save it to the database
+#         ShiftTime.objects.create(
+#             intime=intime,
+#             outtime=outtime,
+#             description=description,
+#             shift_total_time=shift_total_time
+#         )
+
+#         return redirect('shift_list')  # Redirect to the shift list page after saving
+
+#     return render(request, 'FO/addshift.html')
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import ShiftTime
+from datetime import datetime
+
 def addshift(request):
     if request.method == 'POST':
-        intime = request.POST.get('intime')
-        outtime = request.POST.get('outtime')
-        description = request.POST.get('description')
+        try:
+            intime = request.POST.get('intime')
+            outtime = request.POST.get('outtime')
+            description = request.POST.get('description')
 
-        # Convert intime and outtime to datetime objects
-        intime_dt = datetime.strptime(intime, '%H:%M')
-        outtime_dt = datetime.strptime(outtime, '%H:%M')
+            # Convert intime and outtime to datetime objects
+            intime_dt = datetime.strptime(intime, '%H:%M')
+            outtime_dt = datetime.strptime(outtime, '%H:%M')
 
-        # Calculate total time in hours
-        time_difference = outtime_dt - intime_dt
-        shift_total_time = abs(time_difference.total_seconds()) / 3600
+            # Calculate total time in hours
+            time_difference = outtime_dt - intime_dt
+            shift_total_time = abs(time_difference.total_seconds()) / 3600
 
-        # Create a new ShiftTime object and save it to the database
-        ShiftTime.objects.create(
-            intime=intime,
-            outtime=outtime,
-            description=description,
-            shift_total_time=shift_total_time
-        )
+            # Create a new ShiftTime object and save it to the database
+            ShiftTime.objects.create(
+                intime=intime,
+                outtime=outtime,
+                description=description,
+                shift_total_time=shift_total_time
+            )
 
-        return redirect('shift_list')  # Redirect to the shift list page after saving
+            # Return success response
+            return JsonResponse({'success': True})
 
+        except Exception as e:
+            # Return error response
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    # Handle GET request by rendering the form
     return render(request, 'FO/addshift.html')
 
 
 def shift_list(request):
-    shifts = ShiftTime.objects.all()  # Fetch all ShiftTime records
+    shifts = ShiftTime.objects.all()
     return render(request, 'FO/shift_list.html', {'shifts': shifts})
 
-def fo_attendance(request):
-    return render(request,'FO/markattendance.html')
+
+# def fo_attendance(request):
+#     return render(request,'FO/markattendance.html')
 #############################################################################################
 
 ##Yash#######
@@ -1244,104 +1454,122 @@ def fo_attendance(request):
 #     if request.method == 'GET':
 #         employees = EmployeeJoining.objects.all()
 #         companies = UserProfile.objects.filter(user_type='company')
-#         return render(request, 'FO/markattendance.html', {'employees': employees, 'companies': companies})
+#         shifts = ShiftTime.objects.all()
+#         return render(request, 'FO/markattendance.html', {'employees': employees, 'companies': companies,'shifts':shifts})
+from django.shortcuts import render, get_object_or_404
+from .models import UserProfile, EmployeeJoining, ShiftTime
+
+# def markattendance(request):
+#     if request.method == 'GET':
+#         company_id = request.GET.get('company_id')
+        
+#         # Fetch all companies
+#         companies = UserProfile.objects.filter(user_type='company')
+
+#         # Fetch all shifts
+#         shifts = ShiftTime.objects.all()
+
+#         # Initialize employees as an empty list
+#         employees = []
+
+#         if company_id:
+#             # Filter employees based on the selected company
+#             company = get_object_or_404(UserProfile, id=company_id, user_type='company')
+#             employees = EmployeeJoining.objects.filter(company=company)
+
+#         return render(request, 'FO/markattendance.html', {
+#             'employees': employees,
+#             'companies': companies,
+#             'shifts': shifts,
+#         })
 
 def markattendance(request):
-    company_id = request.GET.get('company_id')
-    if company_id:
-        employees = EmployeeJoining.objects.filter(company__id=company_id)
-    else:
-        employees = EmployeeJoining.objects.all()
-
-    companies = UserProfile.objects.filter(user_type='company')
-    return render(request, 'FO/markattendance.html', {'employees': employees, 'companies': companies})
-
-
-
-
-# @require_POST
-# def submit_attendance(request, employee_id):
-#     date = request.POST.get('date')
-#     status = request.POST.get('status')
-#     shift_id = request.POST.get('shift')
-#     notes = request.POST.get('notes')
-
-#     # Validate date and status
-#     if not date:
-#         return JsonResponse({'error': 'Date is required'}, status=400)
-#     if not status:
-#         return JsonResponse({'error': 'Status is required'}, status=400)
-
-#     try:
-#         employee = get_object_or_404(EmployeeJoining, id=employee_id)
-#         shift = get_object_or_404(ShiftTime, id=shift_id) if shift_id else None
-
-#         # Set check_in_time and check_out_time based on shift
-#         check_in_time = shift.intime if shift else None
-#         check_out_time = shift.outtime if shift else None
-
-#         # Create or update attendance
-#         attendance, created = Attendance.objects.update_or_create(
-#             employee=employee,
-#             date=date,
-#             defaults={
-#                 'status': status,
-#                 'check_in_time': check_in_time,
-#                 'check_out_time': check_out_time,
-#                 'shift': shift,
-#                 'notes': notes
-#             }
-#         )
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        company_id = request.POST.get('company')
         
-#         return JsonResponse({'message': 'Attendance updated successfully'})
+        if not date or not company_id:
+            return HttpResponseBadRequest("Date and company are required.")
+        
+        company = get_object_or_404(UserProfile, id=company_id, user_type='company')
+        employees = EmployeeJoining.objects.filter(company=company)
+        
+        for employee in employees:
+            if f'submit_employee_{employee.id}' in request.POST:
+                shift_id = request.POST.get(f'shift_{employee.id}')
+                status = request.POST.get(f'status_{employee.id}')
+                notes = request.POST.get(f'notes_{employee.id}')
+                
+                shift = get_object_or_404(ShiftTime, id=shift_id)
+                
+                Attendance.objects.update_or_create(
+                    employee=employee,
+                    date=date,
+                    defaults={
+                        'status': status,
+                        'shift': shift,
+                        'notes': notes
+                    }
+                )
+                
+        return redirect('markattendance')  # Adjust the redirect URL as needed
+    
+    else:
+        company_id = request.GET.get('company_id')
+        date = request.GET.get('date')
+        
+        companies = UserProfile.objects.filter(user_type='company')
+        shifts = ShiftTime.objects.all()
+        
+        employees = []
+        if company_id:
+            company = get_object_or_404(UserProfile, id=company_id, user_type='company')
+            employees = EmployeeJoining.objects.filter(company=company)
+        
+        return render(request, 'FO/markattendance.html', {
+            'employees': employees,
+            'companies': companies,
+            'shifts': shifts,
+            'date': date
+        })
 
-#     except EmployeeJoining.DoesNotExist:
-#         return JsonResponse({'error': 'Employee not found'}, status=404)
-#     except ShiftTime.DoesNotExist:
-#         return JsonResponse({'error': 'Shift not found'}, status=404)
-#     except Exception as e:
-#         return JsonResponse({'error': str(e)}, status=500)
 
 
-from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse
-from django.views.decorators.http import require_POST
 
-@require_POST
+
+
+
 def submit_attendance(request, employee_id):
-    date = request.POST.get('date')
-    status = request.POST.get('status')
-    shift_id = request.POST.get('shift')
-    notes = request.POST.get('notes')
-
-    if not date or not status:
-        return redirect(f"{request.META.get('HTTP_REFERER')}?error=Date and status are required.")
-
-    try:
+    if request.method == 'POST':
         employee = get_object_or_404(EmployeeJoining, id=employee_id)
+        date = request.POST.get('date')
+        status = request.POST.get('status')
+        shift_id = request.POST.get('shift')
+        notes = request.POST.get('notes', '')
+
         shift = get_object_or_404(ShiftTime, id=shift_id)
 
-        check_in_time = shift.intime if shift else None
-        check_out_time = shift.outtime if shift else None
+        if date and status and shift:
+            # Check if the attendance record already exists for the employee on the selected date
+            attendance, created = Attendance.objects.update_or_create(
+                employee=employee,
+                date=date,
+                defaults={
+                    'status': status,
+                    'shift': shift,
+                    'notes': notes,
+                }
+            )
 
-        attendance, created = Attendance.objects.update_or_create(
-            employee=employee,
-            date=date,
-            defaults={
-                'status': status,
-                'check_in_time': check_in_time,
-                'check_out_time': check_out_time,
-                'shift': shift,
-                'notes': notes
-            }
-        )
+            if created:
+                return redirect(f"{request.path}?success=1")
+            else:
+                return redirect(f"{request.path}?success=1")
 
-        return redirect(f"{request.META.get('HTTP_REFERER')}?success=true")
+        return redirect(f"{request.path}?error=Invalid data provided")
 
-    except EmployeeJoining.DoesNotExist:
-        return redirect(f"{request.META.get('HTTP_REFERER')}?error=Employee not found.")
-    except ShiftTime.DoesNotExist:
-        return redirect(f"{request.META.get('HTTP_REFERER')}?error=Shift not found.")
-    except Exception as e:
-        return redirect(f"{request.META.get('HTTP_REFERER')}?error={str(e)}")
+    return redirect('markattendance')
+
+
+
 

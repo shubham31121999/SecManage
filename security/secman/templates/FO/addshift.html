@@ -86,10 +86,6 @@
             transform: scale(1.02);
         }
 
-        /* button:active {
-            background-color: #2e3741;
-        } */
-
         .popup {
             position: fixed;
             top: 20px;
@@ -134,7 +130,7 @@
 <body>
     <div class="card">
         <h1>Create a New Shift</h1>
-        <form method="post" action="{% url 'addshift' %}" id="shift-form">
+        <form method="post" id="shift-form">
             {% csrf_token %}
 
             <div class="form-group">
@@ -170,23 +166,40 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('shift-form');
+            const successPopup = document.getElementById('success-popup');
+            const errorPopup = document.getElementById('error-popup');
+            const errorMessage = document.getElementById('error-message');
 
             form.addEventListener('submit', function(event) {
                 event.preventDefault(); // Prevent the default form submission
 
-                // Simulate form submission
-                setTimeout(function() {
-                    // Simulate a successful response
-                    showPopup('success-popup');
+                const formData = new FormData(form);
 
-                    // Reset form after submission
-                    form.reset();
-                }, 1000);
+                fetch("{% url 'addshift' %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showPopup(successPopup);
+                        form.reset();
+                    } else {
+                        errorMessage.textContent = data.error || 'An error occurred. Please try again.';
+                        showPopup(errorPopup);
+                    }
+                })
+                .catch(error => {
+                    errorMessage.textContent = 'An error occurred. Please try again.';
+                    showPopup(errorPopup);
+                });
             });
 
-            // Close popups automatically after a few seconds
-            function showPopup(id) {
-                const popup = document.getElementById(id);
+            // Show popup function
+            function showPopup(popup) {
                 popup.style.display = 'block';
                 setTimeout(() => {
                     popup.style.display = 'none';

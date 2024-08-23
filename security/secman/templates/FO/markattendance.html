@@ -62,18 +62,14 @@
         border-radius: 4px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         margin-bottom: 10px;
-        transition: all 0.3s ease;
         transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-        
     }
 
     input[type="date"]:hover, select:hover {
-    border-color: #333333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: scale(1.02);
-}
-
-    
+        border-color: #333333;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.02);
+    }
 
     input[readonly] {
         background-color: #e9ecef;
@@ -90,12 +86,12 @@
         cursor: pointer;
         font-size: 16px;
         transition: background-color 0.3s ease, transform 0.3s ease;
-        }
+    }
 
-        button:hover {
-            background-color: #000000;
-            transform: scale(1.05);
-        }
+    button:hover {
+        background-color: #000000;
+        transform: scale(1.05);
+    }
 
     .popup {
         position: fixed;
@@ -138,7 +134,7 @@
         width: 100%;
     }
 
-     @keyframes fadeIn {
+    @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
     }
@@ -146,40 +142,45 @@
     @keyframes slideIn {
         from { transform: translateY(-20px); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
-    } 
+    }
 </style>
 
 <div class="card">
     <h1>Mark Attendance</h1>
-    <form method="post" action="{% url 'markattendance' %}" id="attendance-form">
+    <form method="get" action="{% url 'markattendance' %}">
         {% csrf_token %}
-
         <div class="form-row">
+            <div>
+                <label for="company">Company:</label>
+                <select id="company" name="company_id" onchange="this.form.submit()" required>
+                    <option value="">Select Company</option>
+                    {% for company in companies %}
+                        <option value="{{ company.id }}" {% if request.GET.company_id == company.id|stringformat:"s" %}selected{% endif %}>{{ company.user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div>
                 <label for="date">Select Date:</label>
                 <input type="date" id="date" name="date" required>
             </div>
-            <div>
-                <label for="company">Company:</label>
-                <select id="company" name="company" required>
-                    <option value="">Select Company</option>
-                    {% for company in companies %}
-                        <option value="{{ company.id }}">{{ company.user.username }}</option>
-                    {% endfor %}
-                </select>
-            </div>
         </div>
+    </form>
+
+    {% if employees %}
+    <form method="post" action="{% url 'markattendance' %}" id="attendance-form">
+        {% csrf_token %}
+        <input type="hidden" name="date" value="{{ request.GET.date }}">
+        <input type="hidden" name="company" value="{{ request.GET.company_id }}">
 
         <table>
             <thead>
                 <tr>
                     <th>Employee ID</th>
                     <th>Full Name</th>
+                    <th>Shift</th>
                     <th>Status</th>
-                    <th></th>
                     <th>Notes</th>
-                    <th>Submit</th>
-                    
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -188,34 +189,35 @@
                     <td>{{ employee.emp_id }}</td>
                     <td>{{ employee.first_name }} {{ employee.middle_name }} {{ employee.last_name }}</td>
                     <td>
-                        <select name="status_{{ employee.id }}" required>
-                            <option value="P">Present</option>
-                            <option value="A">Absent</option>
-                            <!-- <option value="L">Leave</option> -->
-                            <option value="H">Holiday</option>
+                        <select name="shift_{{ employee.id }}" required>
+                            <option value="">Select Shift</option>
+                            {% for shift in shifts %}
+                                <option value="{{ shift.id }}">{{ shift.description }}</option>
+                            {% endfor %}
                         </select>
                     </td>
                     <td>
-                        <!-- <select name="shift_{{ employee.id }}" required>
-                            <option value="D">Day</option>
-                            <option value="N  ">Nignt</option>
-                        </select> -->
-                        <!-- <input type="text" value="{{ employee.shift.description }}" readonly> -->
-                        <!-- <input type="hidden" name="shift_{{ employee.id }}" value="{{ employee.shift.id }}"> -->
-                        <!-- <input type="hidden" name="check_in_time_{{ employee.id }}" value="{{ employee.shift.intime }}"> -->
-                        <!-- <input type="hidden" name="check_out_time_{{ employee.id }}" value="{{ employee.shift.outtime }}"> -->
+                        <select name="status_{{ employee.id }}" required>
+                            <option value="P">Present</option>
+                            <option value="A">Absent</option>
+                            <option value="L">Leave</option>
+                            <option value="H">Holiday</option>
+                        </select>
                     </td>
                     <td>
                         <input type="text" name="notes_{{ employee.id }}" maxlength="255">
                     </td>
                     <td>
-                        <button type="button" class="submit-employee" data-employee-id="{{ employee.id }}">Submit</button>
+                        <button type="submit" name="submit_employee_{{ employee.id }}">Submit</button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <button type="submit">Submit All</button>
     </form>
+    {% endif %}
 </div>
 
 <!-- Success Popup -->
@@ -236,9 +238,7 @@
             button.addEventListener('click', function() {
                 const employeeId = button.getAttribute('data-employee-id');
                 const status = form.querySelector(`select[name="status_${employeeId}"]`).value;
-                const checkInTime = form.querySelector(`input[name="check_in_time_${employeeId}"]`).value;
-                const checkOutTime = form.querySelector(`input[name="check_out_time_${employeeId}"]`).value;
-                const shiftId = form.querySelector(`input[name="shift_${employeeId}"]`).value;
+                const shiftId = form.querySelector(`select[name="shift_${employeeId}"]`).value;
                 const notes = form.querySelector(`input[name="notes_${employeeId}"]`).value;
 
                 if (!form.querySelector('input[name="date"]').value) {
@@ -251,69 +251,64 @@
                     return;
                 }
 
+                // Create a hidden form to submit the individual employee data
                 const hiddenForm = document.createElement('form');
                 hiddenForm.method = 'post';
-                hiddenForm.action = "{% url 'submit_attendance' 0 %}".replace('0', employeeId);
+                hiddenForm.action = form.action;
                 hiddenForm.style.display = 'none';
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
+                hiddenForm.appendChild(csrfInput);
 
-                const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-                hiddenForm.innerHTML = `
-                    <input type="hidden" name="date" value="${form.querySelector('input[name="date"]').value}">
-                    <input type="hidden" name="status" value="${status}">
-                    <input type="hidden" name="check_in_time" value="${checkInTime}">
-                    <input type="hidden" name="check_out_time" value="${checkOutTime}">
-                    <input type="hidden" name="shift" value="${shiftId}">
-                    <input type="hidden" name="notes" value="${notes}">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-                `;
+                const dateInput = document.createElement('input');
+                dateInput.type = 'hidden';
+                dateInput.name = 'date';
+                dateInput.value = form.querySelector('input[name="date"]').value;
+                hiddenForm.appendChild(dateInput);
+
+                const companyInput = document.createElement('input');
+                companyInput.type = 'hidden';
+                companyInput.name = 'company';
+                companyInput.value = form.querySelector('select[name="company"]').value;
+                hiddenForm.appendChild(companyInput);
+
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = `status_${employeeId}`;
+                statusInput.value = status;
+                hiddenForm.appendChild(statusInput);
+
+                const shiftInput = document.createElement('input');
+                shiftInput.type = 'hidden';
+                shiftInput.name = `shift_${employeeId}`;
+                shiftInput.value = shiftId;
+                hiddenForm.appendChild(shiftInput);
+
+                const notesInput = document.createElement('input');
+                notesInput.type = 'hidden';
+                notesInput.name = `notes_${employeeId}`;
+                notesInput.value = notes;
+                hiddenForm.appendChild(notesInput);
+
                 document.body.appendChild(hiddenForm);
                 hiddenForm.submit();
             });
         });
 
-        const urlParams = new URLSearchParams(window.location.search);
-    
-        if (urlParams.has('success')) {
-            showPopup('success-popup', 'Attendance updated successfully!');
-        } else if (urlParams.has('error')) {
-            const errorMessage = urlParams.get('error');
-            showPopup('error-popup', errorMessage || 'An error occurred. Please try again.');
-        }
-
-        function showPopup(id, message) {
-            const popup = document.getElementById(id);
-            popup.querySelector('p').textContent = message;
+        function showPopup(popupId, message) {
+            const popup = document.getElementById(popupId);
+            const errorMessage = document.getElementById('error-message');
+            if (popupId === 'error-popup') {
+                errorMessage.textContent = message;
+            }
             popup.style.display = 'block';
             setTimeout(() => {
                 popup.style.display = 'none';
-                // Remove the URL parameter after displaying the popup
-                window.history.replaceState({}, document.title, window.location.pathname);
             }, 3000);
         }
     });
-
-    document.addEventListener('DOMContentLoaded', function() {
-    const companySelect = document.getElementById('company');
-
-    companySelect.addEventListener('change', function() {
-        const companyId = this.value;
-
-        fetch(`{% url 'markattendance' %}?company_id=${companyId}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(data => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(data, 'text/html');
-            const newTableBody = doc.querySelector('tbody');
-            document.querySelector('tbody').innerHTML = newTableBody.innerHTML;
-        })
-        .catch(error => console.error('Error:', error));
-    });
-});
-
 </script>
-
-{% endblock content %}
+{% endblock %}

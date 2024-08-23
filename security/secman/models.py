@@ -64,28 +64,10 @@ class EmployeeJoining(models.Model):
     experience = models.CharField(max_length=20)
     company = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, limit_choices_to={'user_type': 'company'})
     
-    shift = models.ForeignKey('ShiftTime', on_delete=models.SET_NULL, null=True)
     pdf_file = models.FileField(upload_to='employee_pdfs/', blank=True, null=True)
 
-    # New fields
-    basic_salary = models.IntegerField()
-    special_allowance = models.IntegerField()
-    total = models.IntegerField()
-    conveyance_allowance = models.IntegerField()
-    education_allowance = models.IntegerField()
-    travelling_allowance = models.IntegerField()
-    hours_daily_duty = models.IntegerField()
-    total_b = models.IntegerField()
-    hra = models.IntegerField()
-    pf = models.IntegerField()
-    gratuity = models.IntegerField()
-    leave_with_wages = models.IntegerField()
-    esic = models.IntegerField()
-    paid_holiday = models.IntegerField()
-    bonus = models.IntegerField()
-    uniform = models.IntegerField()
-    total_c = models.IntegerField()
-    service_charge = models.IntegerField()
+    
+    
 
     def __str__(self):
         return self.emp_id
@@ -150,3 +132,34 @@ class Quotation(models.Model):
 
     def __str__(self):
         return f"Quotation for {self.company.user.email} by {self.user.email}"
+
+
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class SalaryDetails(models.Model):
+    employee = models.ForeignKey(EmployeeJoining, on_delete=models.CASCADE) 
+    basic_salary = models.IntegerField()
+    special_allowance = models.IntegerField()
+    total = models.IntegerField()
+    conveyance_allowance = models.IntegerField()
+    education_allowance = models.IntegerField()
+    travelling_allowance = models.IntegerField()
+    hours_daily_duty = models.IntegerField()
+    total_b = models.IntegerField()
+    hra = models.IntegerField()
+    pf = models.IntegerField()
+    gratuity = models.IntegerField()
+    leave_with_wages = models.IntegerField()
+    esic = models.IntegerField()
+    paid_holiday = models.IntegerField()
+    bonus = models.IntegerField()
+    uniform = models.IntegerField()
+    total_c = models.IntegerField()
+    service_charge = models.IntegerField()
+    advance_payment = models.IntegerField()
+    food_allowance = models.IntegerField()
+
+    def __str__(self):
+        return f"Salary Details for {self.user.username}"

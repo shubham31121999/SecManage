@@ -542,16 +542,17 @@
                     <label for="service_charge">Service Charge:</label>
                     <input type="number" name="service_charge" id="service_charge" step="0.01" required>
                 </li>
+                <li>
+                    <label for="advance_payment">Advance Payment:</label>
+                    <input type="number" name="advance_payment" id="advance_payment" step="0.01" required>
+                </li>
+                
+                <li>
+                    <label for="food_allowance">Food Allowance:</label>
+                    <input type="number" name="food_allowance" id="food_allowance" step="0.01" required>
+                </li>
             
-                <!-- <li>
-                    <label for="shift">Shift:</label>
-                    <select id="shift" name="shift" required>
-                        <option value="">Select Shift</option>
-                        {% for shift in shifts %}
-                            <option value="{{ shift.id }}">{{ shift.description }}</option>
-                        {% endfor %}
-                    </select>
-                </li> -->
+                
             
                 <li>
                     <label for="company">Company:</label>
