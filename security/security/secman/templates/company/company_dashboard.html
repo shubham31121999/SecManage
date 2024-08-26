@@ -1,0 +1,168 @@
+{% extends 'company/baseco.html' %}
+
+{% block content %}
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .card {
+            width: 95%;
+            margin: 2% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .card h1 {
+            text-align: center;
+            color: #333333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        table:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        thead {
+            background: #333333;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        th {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: scale(1.01);
+        }
+
+        td {
+            font-size: 14px;
+            color: #333;
+        }
+
+        td:first-child {
+            font-weight: bold;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            table {
+                border: 0;
+            }
+
+            table thead {
+                display: none;
+            }
+
+            table tbody tr {
+                display: block;
+                margin-bottom: 10px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            table tbody td {
+                display: block;
+                text-align: right;
+                font-size: 14px;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            table tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 10px;
+                font-weight: bold;
+                text-align: left;
+                color: #007bff;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Employee Work Hours</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Full Name</th>
+                    <th>Total Hours Worked</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in employee_hours %}
+                <tr>
+                    <td data-label="Employee ID">{{ entry.employee.emp_id }}</td>
+                    <td data-label="Full Name">{{ entry.employee.first_name }} {{ entry.employee.middle_name }} {{ entry.employee.last_name }}</td>
+                    <td data-label="Total Hours Worked">{{ entry.total_hours }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+{% endblock %}

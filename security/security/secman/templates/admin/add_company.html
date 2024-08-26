@@ -1,0 +1,164 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .card {
+            width: 95%;
+            margin: 2% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .card h1 {
+            text-align: center;
+            color: #333333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group > div {
+            flex: 1;
+        }
+
+        label {
+            font-size: 14px;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            border-color: #312929;
+            outline: none;
+            box-shadow: 0 0 8px rgba(49, 41, 41, 0.5);
+            transform: scale(1.02);
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #312929;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #000000;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            background-color: #2e3741;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .form-group > div {
+            width: 48%; /* Adjust width to fit two fields in one row */
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Add Company</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+<<<<<<< HEAD
+                    <label for="first_name">Name:</label>
+                    <input type="text" name="first_name" required>
+                </div>
+                <div>
+                    <label for="last_name">Address:</label>
+=======
+                    <label for="first_name">First Name:</label>
+                    <input type="text" name="first_name" required>
+                </div>
+                <div>
+                    <label for="last_name">Last Name:</label>
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+                    <input type="text" name="last_name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="contact">Contact Number:</label>
+                    <input type="text" name="contact" required>
+                </div>
+                <div>
+<<<<<<< HEAD
+                    <label for="gst_or_emergency">GST Number:</label>
+=======
+                    <label for="gst_or_emergency">GST/Emergency Contact:</label>
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+                    <input type="text" name="gst_or_emergency" required>
+                </div>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+{% endblock %}

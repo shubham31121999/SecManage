@@ -1,0 +1,108 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Sheet</title>
+    <style>
+        
+
+        .table-container {
+            overflow-x: auto; /* Enables horizontal scrolling */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            min-width: 1000px; /* Set a minimum width for the table */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Salary Sheet</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Basic Salary</th>
+                    <th>Special Allowance</th>
+                    <th>Total</th>
+                    <th>Conveyance Allowance</th>
+                    <th>Education Allowance</th>
+                    <th>Travelling Allowance</th>
+                    <th>Hours Daily Duty</th>
+                    <th>Total (B)</th>
+                    <th>HRA</th>
+                    <th>PF</th>
+                    <th>Gratuity</th>
+                    <th>Leave With Wages</th>
+                    <th>ESIC</th>
+                    <th>Paid Holiday</th>
+                    <th>Bonus</th>
+                    <th>Uniform</th>
+                    
+                    <th>Advance Payment</th>
+                    <th>Food Allowance</th>
+                    <th>Total (C)</th>
+                    <th>Actual Salary</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for salary in salary_with_actual %}
+                <tr>
+                    <td>{{ salary.employee }}</td>
+                    <td>{{ salary.basic_salary }}</td>
+                    <td>{{ salary.special_allowance }}</td>
+                    <td>{{ salary.total }}</td>
+                    <td>{{ salary.conveyance_allowance }}</td>
+                    <td>{{ salary.education_allowance }}</td>
+                    <td>{{ salary.travelling_allowance }}</td>
+                    <td>{{ salary.hours_daily_duty }}</td>
+                    <td>{{ salary.total_b }}</td>
+                    <td>{{ salary.hra }}</td>
+                    <td>{{ salary.pf }}</td>
+                    <td>{{ salary.gratuity }}</td>
+                    <td>{{ salary.leave_with_wages }}</td>
+                    <td>{{ salary.esic }}</td>
+                    <td>{{ salary.paid_holiday }}</td>
+                    <td>{{ salary.bonus }}</td>
+                    <td>{{ salary.uniform }}</td>
+                    <td>{{ salary.advance_payment }}</td>
+                    <td>{{ salary.food_allowance }}</td>
+                    <td>{{ salary.total_c }}</td>
+                    <td>{{ salary.actual_salary }}</td>
+                    
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+{% endblock content %}

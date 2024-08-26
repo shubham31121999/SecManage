@@ -1,0 +1,443 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<style>
+
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .card {
+            width: 95%;
+            margin: 2% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .card h1 {
+            text-align: center;
+            color: #333333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+    /* Modal container */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto; /* Centered and with margin */
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%; /* Adjust as needed */
+    max-width: 1000px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modal Header */
+.modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+    animation: headerFadeIn 0.5s ease-in-out;
+}
+
+/* Flex container for form sections */
+.modal-body {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Section containers */
+.modal-body .section {
+    flex: 1;
+    border-right: 2px solid #ddd;
+    padding-right: 20px;
+}
+
+.modal-body .section:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form styles */
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="number"] {
+    width: 100%; /* Full width of the container */
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Includes padding in width calculation */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+form input[type="text"]:hover,
+form input[type="number"]:hover {
+    border-color: #312929;
+    box-shadow: 0 0 5px rgba(49, 41, 41, 0.5);
+}
+
+form input[type="submit"] {
+    background-color: #312929;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    width: 100%;
+}
+
+form input[type="submit"]:hover {
+    background-color: #000000;
+    transform: translateY(-2px);
+}
+
+/* Animations
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes headerFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+} */
+
+/* Table Styling */
+table {
+    width: 95%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: left;
+    animation: tableFadeIn 0.5s ease-in-out;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table thead tr {
+    background-color: #312929;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+}
+
+table th, table td {
+    padding: 12px 15px;
+}
+
+table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+table tbody tr:last-of-type {
+    border-bottom: 2px solid #312929;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+/* Table animation
+@keyframes tableFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+} */
+
+/* Link Styling */
+a {
+    color: #312929;
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+a:hover {
+    color: #000000;
+    text-decoration: underline;
+}
+
+/* Button Styling */
+button {
+    background-color: #312929;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #000000;
+    transform: translateY(-2px);
+}
+
+</style>
+<div class="card">
+<h1>List of Quotations</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Sr. No.</th>
+            <th>Company Name</th>
+            <th>Action</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for quotation in quotations %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ quotation.company }}</td>
+            <td>
+                <a href="{% url 'view_quotation_pdf' quotation.id %}" target="_blank">View PDF</a>
+                </td>
+                <td>
+                    <button onclick="openEditModal({{ quotation.id }}, '{{ quotation.company }}', {{ quotation.guard_basic_pay }}, {{ quotation.guard_special_allowance }}, {{ quotation.guard_total_a }}, {{ quotation.guard_conveyance_allowance }}, {{ quotation.guard_education_allowance }}, {{ quotation.guard_travelling_allowance }}, {{ quotation.guard_house_duty }}, {{ quotation.guard_total_b }}, {{ quotation.guard_washing_allowance }}, {{ quotation.guard_hra }}, {{ quotation.guard_sub_total_c }}, {{ quotation.guard_pf }}, {{ quotation.guard_gratuity }}, {{ quotation.guard_leave_with_wages }}, {{ quotation.guard_esic }}, {{ quotation.guard_paid_holiday }}, {{ quotation.guard_bonus }}, {{ quotation.guard_uniform }},
+                 {{ quotation.guard_total_c }}, {{ quotation.guard_service_charges }}, {{ quotation.guard_grand_total_per_month }}, {{ quotation.supervisor_basic_pay }}, {{ quotation.supervisor_special_allowance }}, {{ quotation.supervisor_total_a }}, {{ quotation.supervisor_conveyance_allowance }}, {{ quotation.supervisor_education_allowance }}, {{ quotation.supervisor_travelling_allowance }}, {{ quotation.supervisor_house_duty }}, {{ quotation.supervisor_total_b }}, {{ quotation.supervisor_washing_allowance }}, {{ quotation.supervisor_hra }}, {{ quotation.supervisor_sub_total_c }}, {{ quotation.supervisor_pf }}, {{ quotation.supervisor_gratuity }}, {{ quotation.supervisor_leave_with_wages }}, {{ quotation.supervisor_esic }}, {{ quotation.supervisor_paid_holiday }}, {{ quotation.supervisor_bonus }}, {{ quotation.supervisor_uniform }}, {{ quotation.supervisor_total_c }}, {{ quotation.supervisor_service_charges }}, {{ quotation.supervisor_grand_total_per_month }})">Edit</button>
+            
+                </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No quotations found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<!-- Modal HTML -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Edit Quotation</h2>
+        <form id="editForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="id" id="quotationId">
+            <label for="company">Company Name:</label>
+            <input type="text" name="company" id="companyName" required><br>
+            
+            <!-- Guard Fields -->
+            <h3>Guard Details</h3>
+            <label for="guard_basic_pay">Basic Pay:</label>
+            <input type="number" step="0.01" name="guard_basic_pay" id="guardBasicPay" required><br>
+
+            <label for="guard_special_allowance">Special Allowance:</label>
+            <input type="number" step="0.01" name="guard_special_allowance" id="guardSpecialAllowance" required><br>
+
+            <label for="guard_total_a">Total (A):</label>
+            <input type="number" step="0.01" name="guard_total_a" id="guardTotalA" required><br>
+
+            <label for="guard_conveyance_allowance">Conveyance Allowance:</label>
+            <input type="number" step="0.01" name="guard_conveyance_allowance" id="guardConveyanceAllowance" required><br>
+
+             <label for="guard_education_allowance">Education Allowance:</label>
+            <input type="number" step="0.01" name="guard_education_allowance" id="guardEducationAllowance" required><br>
+            
+            <label for="guard_travelling_allowance">Travelling Allowance:</label>
+            <input type="number" step="0.01" name="guard_travelling_allowance" id="guardTravellingAllowance" required><br>
+            
+            <label for="guard_house_duty">House Duty:</label>
+            <input type="number" step="0.01" name="guard_house_duty" id="guardHouseDuty" required><br>
+            
+            <label for="guard_total_b">Total (B):</label>
+            <input type="number" step="0.01" name="guard_total_b" id="guardTotalB" required><br>
+            
+            <label for="guard_washing_allowance">Washing Allowance:</label>
+            <input type="number" step="0.01" name="guard_washing_allowance" id="guardWashingAllowance" required><br>
+            
+            <label for="guard_hra">HRA:</label>
+            <input type="number" step="0.01" name="guard_hra" id="guardHra" required><br>
+            
+            <label for="guard_sub_total_c">Sub Total (C):</label>
+            <input type="number" step="0.01" name="guard_sub_total_c" id="guardSubTotalC" required><br>
+            
+            <label for="guard_pf">PF:</label>
+            <input type="number" step="0.01" name="guard_pf" id="guardPf" required><br>
+            
+            <label for="guard_gratuity">Gratuity:</label>
+            <input type="number" step="0.01" name="guard_gratuity" id="guardGratuity" required><br>
+            
+            <label for="guard_leave_with_wages">Leave With Wages:</label>
+            <input type="number" step="0.01" name="guard_leave_with_wages" id="guardLeaveWithWages" required><br>
+            
+            <label for="guard_esic">ESIC:</label>
+            <input type="number" step="0.01" name="guard_esic" id="guardEsic" required><br>
+            
+            <label for="guard_paid_holiday">Paid Holiday:</label>
+            <input type="number" step="0.01" name="guard_paid_holiday" id="guardPaidHoliday" required><br>
+            
+            <label for="guard_bonus">Bonus:</label>
+            <input type="number" step="0.01" name="guard_bonus" id="guardBonus" required><br>
+            
+            <label for="guard_uniform">Uniform:</label>
+            <input type="number" step="0.01" name="guard_uniform" id="guardUniform" required><br>
+            
+            <label for="guard_total_c">Total (C):</label>
+            <input type="number" step="0.01" name="guard_total_c" id="guardTotalC" required><br>
+            
+            <label for="guard_service_charges">Service Charges:</label>
+            <input type="number" step="0.01" name="guard_service_charges" id="guardServiceCharges" required><br>
+            
+            <label for="guard_grand_total_per_month">Grand Total per Month:</label>
+            <input type="number" step="0.01" name="guard_grand_total_per_month" id="guardGrandTotalPerMonth" required><br>
+
+
+            <!-- Supervisor Fields -->
+            <h3>Supervisor Details</h3>
+            <label for="supervisor_basic_pay">Basic Pay:</label>
+            <input type="number" step="0.01" name="supervisor_basic_pay" id="supervisorBasicPay" required><br>
+
+            <label for="supervisor_special_allowance">Special Allowance:</label>
+            <input type="number" step="0.01" name="supervisor_special_allowance" id="supervisorSpecialAllowance" required><br>
+
+            <label for="supervisor_total_a">Total (A):</label>
+            <input type="number" step="0.01" name="supervisor_total_a" id="supervisorTotalA" required><br>
+
+            <label for="supervisor_conveyance_allowance">Conveyance Allowance:</label>
+            <input type="number" step="0.01" name="supervisor_conveyance_allowance" id="supervisorConveyanceAllowance" required><br>
+
+            <label for="supervisor_education_allowance">Education Allowance:</label>
+            <input type="number" step="0.01" name="supervisor_education_allowance" id="supervisorEducationAllowance" required><br>
+            
+            <label for="supervisor_travelling_allowance">Travelling Allowance:</label>
+            <input type="number" step="0.01" name="supervisor_travelling_allowance" id="supervisorTravellingAllowance" required><br>
+            
+            <label for="supervisor_house_duty">House Duty:</label>
+            <input type="number" step="0.01" name="supervisor_house_duty" id="supervisorHouseDuty" required><br>
+            
+            <label for="supervisor_total_b">Total (B):</label>
+            <input type="number" step="0.01" name="supervisor_total_b" id="supervisorTotalB" required><br>
+            
+            <label for="supervisor_washing_allowance">Washing Allowance:</label>
+            <input type="number" step="0.01" name="supervisor_washing_allowance" id="supervisorWashingAllowance" required><br>
+            
+            <label for="supervisor_hra">HRA:</label>
+            <input type="number" step="0.01" name="supervisor_hra" id="supervisorHra" required><br>
+            
+            <label for="supervisor_sub_total_c">Sub Total (C):</label>
+            <input type="number" step="0.01" name="supervisor_sub_total_c" id="supervisorSubTotalC" required><br>
+            
+            <label for="supervisor_pf">PF:</label>
+            <input type="number" step="0.01" name="supervisor_pf" id="supervisorPf" required><br>
+            
+            <label for="supervisor_gratuity">Gratuity:</label>
+            <input type="number" step="0.01" name="supervisor_gratuity" id="supervisorGratuity" required><br>
+            
+            <label for="supervisor_leave_with_wages">Leave With Wages:</label>
+            <input type="number" step="0.01" name="supervisor_leave_with_wages" id="supervisorLeaveWithWages" required><br>
+            
+            <label for="supervisor_esic">ESIC:</label>
+            <input type="number" step="0.01" name="supervisor_esic" id="supervisorEsic" required><br>
+            
+            <label for="supervisor_paid_holiday">Paid Holiday:</label>
+            <input type="number" step="0.01" name="supervisor_paid_holiday" id="supervisorPaidHoliday" required><br>
+            
+            <label for="supervisor_bonus">Bonus:</label>
+            <input type="number" step="0.01" name="supervisor_bonus" id="supervisorBonus" required><br>
+            
+            <label for="supervisor_uniform">Uniform:</label>
+            <input type="number" step="0.01" name="supervisor_uniform" id="supervisorUniform" required><br>
+            
+            <label for="supervisor_total_c">Total (C):</label>
+            <input type="number" step="0.01" name="supervisor_total_c" id="supervisorTotalC" required><br>
+            
+            <label for="supervisor_service_charges">Service Charges:</label>
+            <input type="number" step="0.01" name="supervisor_service_charges" id="supervisorServiceCharges" required><br>
+            
+            <label for="supervisor_grand_total_per_month">Grand Total per Month:</label>
+            <input type="number" step="0.01" name="supervisor_grand_total_per_month" id="supervisorGrandTotalPerMonth" required><br>
+
+            <input type="submit" value="Update Quotation">
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditModal(id, company, guardBasicPay, guardSpecialAllowance, guardTotalA, guardConveyanceAllowance, supervisorBasicPay, supervisorSpecialAllowance, supervisorTotalA, supervisorConveyanceAllowance) {
+        document.getElementById('quotationId').value = id;
+        document.getElementById('companyName').value = company;
+        document.getElementById('guardBasicPay').value = guardBasicPay;
+        document.getElementById('guardSpecialAllowance').value = guardSpecialAllowance;
+        document.getElementById('guardTotalA').value = guardTotalA;
+        document.getElementById('guardConveyanceAllowance').value = guardConveyanceAllowance;
+        document.getElementById('supervisorBasicPay').value = supervisorBasicPay;
+        document.getElementById('supervisorSpecialAllowance').value = supervisorSpecialAllowance;
+        document.getElementById('supervisorTotalA').value = supervisorTotalA;
+        document.getElementById('supervisorConveyanceAllowance').value = supervisorConveyanceAllowance;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+</script>
+
+{% endblock %}

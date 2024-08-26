@@ -1,0 +1,345 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .card {
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+<<<<<<< HEAD
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+=======
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    input[type="date"]:hover, select:hover {
+        border-color: #333333;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.02);
+    }
+
+    input[readonly] {
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        cursor: not-allowed;
+    }
+
+    button {
+        background-color: #333333;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #000000;
+        transform: scale(1.05);
+    }
+
+    .popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: none;
+        z-index: 1000;
+    }
+
+    .popup.error {
+        background-color: #dc3545;
+    }
+
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+    .form-row {
+        margin-bottom: 15px;
+    }
+    .form-row label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    .form-row input, .form-row select {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+<<<<<<< HEAD
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    .submit-btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .submit-btn:hover {
+        background-color: #0056b3;
+    }
+    .loading {
+        display: none;
+        font-size: 16px;
+        color: #007bff;
+    }
+=======
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+</style>
+
+<div class="card">
+    <h1>Mark Attendance</h1>
+<<<<<<< HEAD
+    <form id="filterForm" method="get" action="{% url 'markattendance' %}">
+        <div class="form-row">
+            <label for="date">Select Date:</label>
+            <input type="date" id="date" name="date" value="{{ date }}" required>
+        </div>
+        <div class="form-row">
+            <label for="company">Company:</label>
+            <select id="company" name="company" required>
+                <option value="">Select Company</option>
+                {% for company in companies %}
+                    <option value="{{ company.id }}" {% if company.id|stringformat:"s" == company_id %}selected{% endif %}>{{ company.user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="submit-btn">Filter</button>
+    </form>
+=======
+    <form method="get" action="{% url 'markattendance' %}">
+        {% csrf_token %}
+        <div class="form-row">
+            <div>
+                <label for="company">Company:</label>
+                <select id="company" name="company_id" onchange="this.form.submit()" required>
+                    <option value="">Select Company</option>
+                    {% for company in companies %}
+                        <option value="{{ company.id }}" {% if request.GET.company_id == company.id|stringformat:"s" %}selected{% endif %}>{{ company.user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="date">Select Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+        </div>
+    </form>
+
+    {% if employees %}
+    <form method="post" action="{% url 'markattendance' %}" id="attendance-form">
+        {% csrf_token %}
+        <input type="hidden" name="date" value="{{ request.GET.date }}">
+        <input type="hidden" name="company" value="{{ request.GET.company_id }}">
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+
+    {% if employees %}
+    <form id="attendanceForm" method="post" action="{% url 'submit_attendance' %}">
+        {% csrf_token %}
+        <input type="hidden" name="date" value="{{ date }}">
+        <input type="hidden" name="company" value="{{ company_id }}">
+    
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Full Name</th>
+                    <th>Shift</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.emp_id }}</td>
+                    <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                    <td>
+<<<<<<< HEAD
+                        <select name="status_{{ employee.id }}" required>
+                            <option value="">Select Status</option>
+                            <option value="P">Present</option>
+                            <option value="A">Absent</option>
+                            <option value="L">Leave</option>
+                            <option value="H">Holiday</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="shift_{{ employee.id }}" required>
+                            <option value="">Select Shift</option>
+                            {% for shift in shifts %}
+                                <option value="{{ shift.id }}">{{ shift.description }}</option>
+                            {% endfor %}
+=======
+                        <select name="shift_{{ employee.id }}" required>
+                            <option value="">Select Shift</option>
+                            {% for shift in shifts %}
+                                <option value="{{ shift.id }}">{{ shift.description }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select name="status_{{ employee.id }}" required>
+                            <option value="P">Present</option>
+                            <option value="A">Absent</option>
+                            <option value="L">Leave</option>
+                            <option value="H">Holiday</option>
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+                        </select>
+                    </td>
+                    <td><input type="text" name="notes_{{ employee.id }}" maxlength="255"></td>
+                    <td>
+<<<<<<< HEAD
+                        <button type="submit" name="submit_{{ employee.id }}" value="{{ employee.id }}">Submit</button>
+=======
+                        <input type="text" name="notes_{{ employee.id }}" maxlength="255">
+                    </td>
+                    <td>
+                        <button type="submit" name="submit_employee_{{ employee.id }}">Submit</button>
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="submit">Submit All</button>
+    </form>
+    {% endif %}
+</div>
+<<<<<<< HEAD
+{% endblock content %}
+=======
+
+<!-- Success Popup -->
+<div id="success-popup" class="popup">
+    <p>Attendance updated successfully!</p>
+</div>
+
+<!-- Error Popup -->
+<div id="error-popup" class="popup error">
+    <p id="error-message">An error occurred. Please try again.</p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('attendance-form');
+
+        document.querySelectorAll('.submit-employee').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const employeeId = button.getAttribute('data-employee-id');
+                const status = form.querySelector(`select[name="status_${employeeId}"]`).value;
+                const shiftId = form.querySelector(`select[name="shift_${employeeId}"]`).value;
+                const notes = form.querySelector(`input[name="notes_${employeeId}"]`).value;
+
+                if (!form.querySelector('input[name="date"]').value) {
+                    showPopup('error-popup', 'Please select a date.');
+                    return;
+                }
+
+                if (!status) {
+                    showPopup('error-popup', 'Please select an attendance status.');
+                    return;
+                }
+
+                // Create a hidden form to submit the individual employee data
+                const hiddenForm = document.createElement('form');
+                hiddenForm.method = 'post';
+                hiddenForm.action = form.action;
+                hiddenForm.style.display = 'none';
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
+                hiddenForm.appendChild(csrfInput);
+
+                const dateInput = document.createElement('input');
+                dateInput.type = 'hidden';
+                dateInput.name = 'date';
+                dateInput.value = form.querySelector('input[name="date"]').value;
+                hiddenForm.appendChild(dateInput);
+
+                const companyInput = document.createElement('input');
+                companyInput.type = 'hidden';
+                companyInput.name = 'company';
+                companyInput.value = form.querySelector('select[name="company"]').value;
+                hiddenForm.appendChild(companyInput);
+
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = `status_${employeeId}`;
+                statusInput.value = status;
+                hiddenForm.appendChild(statusInput);
+
+                const shiftInput = document.createElement('input');
+                shiftInput.type = 'hidden';
+                shiftInput.name = `shift_${employeeId}`;
+                shiftInput.value = shiftId;
+                hiddenForm.appendChild(shiftInput);
+
+                const notesInput = document.createElement('input');
+                notesInput.type = 'hidden';
+                notesInput.name = `notes_${employeeId}`;
+                notesInput.value = notes;
+                hiddenForm.appendChild(notesInput);
+
+                document.body.appendChild(hiddenForm);
+                hiddenForm.submit();
+            });
+        });
+
+        function showPopup(popupId, message) {
+            const popup = document.getElementById(popupId);
+            const errorMessage = document.getElementById('error-message');
+            if (popupId === 'error-popup') {
+                errorMessage.textContent = message;
+            }
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
+{% endblock %}
+>>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
