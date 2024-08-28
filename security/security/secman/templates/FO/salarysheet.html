@@ -6,43 +6,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salary Sheet</title>
     <style>
-        
-
-        .table-container {
-            overflow-x: auto; /* Enables horizontal scrolling */
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
         }
 
+        .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin: 20px 0;
+            animation: slideIn 1s ease-in-out;
+        }
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin: 0 2%;
+            padding: 20px;
+            animation: fadeIn 1s ease-in;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            border-spacing: 0;
-            min-width: 1000px; /* Set a minimum width for the table */
+            min-width: 1000px;
         }
-
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 10px;
             text-align: left;
         }
-
         th {
             background-color: #f4f4f4;
+            color: #333;
         }
-
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-
         thead th {
             position: sticky;
             top: 0;
-            background-color: #f4f4f4;
+            background-color: #333;
+            color: #ffffff;
+            z-index: 1;
+        }
+        td {
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+        td:hover {
+            background-color: #e9ecef;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
+<div class="card">
     <h1>Salary Sheet</h1>
     <div class="table-container">
         <table>
@@ -65,12 +104,10 @@
                     <th>Paid Holiday</th>
                     <th>Bonus</th>
                     <th>Uniform</th>
-                    
                     <th>Advance Payment</th>
                     <th>Food Allowance</th>
                     <th>Total (C)</th>
                     <th>Actual Salary</th>
-                    
                 </tr>
             </thead>
             <tbody>
@@ -97,12 +134,11 @@
                     <td>{{ salary.food_allowance }}</td>
                     <td>{{ salary.total_c }}</td>
                     <td>{{ salary.actual_salary }}</td>
-                    
-                    
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+</div>
 </body>
 {% endblock content %}

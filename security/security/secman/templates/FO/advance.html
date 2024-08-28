@@ -1,0 +1,25 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+<h1>Advance Options for {{ employee.first_name }} {{ employee.last_name }}</h1>
+
+<p><strong>Basic Salary:</strong> {{ salary_details.basic_salary }}</p>
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <label for="advance_amount">Advance Amount:</label>
+    <input type="number" id="advance_amount" name="advance_amount" step="0.01" min="0" required>
+
+    <button type="submit">Submit</button>
+</form>
+
+{% if messages %}
+    <ul>
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+<a href="/">Back to Employee List</a>
+{% endblock content %}

@@ -1,0 +1,50 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee List by Company</title>
+    <script>
+        function fetchEmployees() {
+            const companyId = document.getElementById('company-select').value;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `/get-employees?company_id=${companyId}`, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const employees = JSON.parse(xhr.responseText);
+                    const employeeList = document.getElementById('employee-list');
+                    employeeList.innerHTML = '';
+
+                    employees.forEach(employee => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            (ID: ${employee.emp_id}) ${employee.first_name} ${employee.last_name}
+                            <a href="/monthly-attendance/${employee.emp_id}/" class="btn">View Monthly Attendance</a>
+                            <a href="/advance/${employee.emp_id}/" class="btn">Advance</a>
+                        `;
+                        employeeList.appendChild(li);
+                    });
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</head>
+<body>
+    <h1>Select a Company</h1>
+    <select id="company-select" onchange="fetchEmployees()">
+        <option value="">Select a company</option>
+        {% for company in companies %}
+            <option value="{{ company.id }}">{{ company.user.username }}</option>
+        {% endfor %}
+    </select>
+
+    <h2>Employee List</h2>
+    <ul id="employee-list">
+        <!-- Employee names and buttons will be populated here -->
+    </ul>
+</body>
+
+{% endblock content %}

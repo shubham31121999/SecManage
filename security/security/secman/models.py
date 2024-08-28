@@ -113,11 +113,7 @@ class EmployeeJoining(models.Model):
     company = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, limit_choices_to={'user_type': 'company'})
     
     pdf_file = models.FileField(upload_to='employee_pdfs/', blank=True, null=True)
-<<<<<<< HEAD
-    joining_date = models.DateField()
-=======
-
->>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+    # joining_date = models.DateField()
     
     
 
@@ -187,7 +183,6 @@ class Quotation(models.Model):
         return f"Quotation for {self.company.user.email} by {self.user.email}"
 
 
-<<<<<<< HEAD
 class Quotations(models.Model):
     # Fields for security guards
     company = models.CharField(max_length=100)
@@ -265,10 +260,6 @@ class TaxInvoice(models.Model):
     
     
 from django.db import models
-=======
-
-from django.db import models
->>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
 from django.contrib.auth.models import User
 
 class SalaryDetails(models.Model):
@@ -293,13 +284,7 @@ class SalaryDetails(models.Model):
     service_charge = models.IntegerField()
     advance_payment = models.IntegerField()
     food_allowance = models.IntegerField()
-<<<<<<< HEAD
     actual_salary = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return f"Salary Details for {self.user.username}"
-=======
-
-    def __str__(self):
-        return f"Salary Details for {self.user.username}"
->>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e

@@ -32,7 +32,6 @@ urlpatterns = [
     path('createquotation/', views.createquotation, name='createquotation'),
     path('addshift',views.addshift,name='addshift'),
     path('shifts/', views.shift_list, name='shift_list'),
-<<<<<<< HEAD
     path('markattendance/', views.markattendance, name='markattendance'),
     
     path('submit_attendance/', views.submit_attendance, name='submit_attendance'),
@@ -46,11 +45,9 @@ urlpatterns = [
     path('companies/', views.company_list, name='company_list'),
     path('companies/<int:company_id>/', views.company_employees, name='company_employees'),
     path('salarysheet',views.salarysheet,name='salarysheet'),
-=======
-    path('markattendance',views.markattendance, name='markattendance'),
-    path('markattendance/submit/<int:employee_id>/', views.submit_attendance, name='submit_attendance'),
-    path('submit_attendance/<int:employee_id>/', views.submit_attendance, name='submit_attendance'),
-    path('colist/',views.companyList,name='colist'),
->>>>>>> 23d12f71a2d4a85c7952dc1ac70632a3b6f8973e
+    path('present',views.present, name='present'),
+    path('get-employees/', views.get_employees, name='get_employees'),
+    path('monthly-attendance/<str:emp_id>/', views.monthly_attendance, name='monthly_attendance'),
+    path('advance/<str:emp_id>/', views.advance_options, name='advance'),
     path('admin/', admin.site.urls),
 ]
