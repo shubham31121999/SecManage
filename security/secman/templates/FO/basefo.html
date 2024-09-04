@@ -284,42 +284,84 @@ body {
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-                <li>
-                  <a href="{% url 'addshift' %}">
-                        <span class="icon">
-                          <i class="fa-regular fa-calendar-plus fa-xl"></i>
-                        </span>
-                        <span class="title">Add Shift</span>
-                    </a>
-                </li>
 
+                                
+
+                <li>
+                  <a href="{% url 'add_employee' %}">
+                      <span class="icon">
+                        <i class="fa-solid fa-user-plus fa-xl"></i>
+                      </span>
+                      <span class="title">Add Employee</span>
+                  </a>
+              </li>
+
+                <li id="shift">
+                  <a href="#">
+                    <span class="icon">
+                      <i class="fa-solid fa-user-group fa-xl"></i>
+                    </span>
+                    <span class="title">Shift <ion-icon id="shift-arrow" name="chevron-down-outline"></ion-icon></span>
+                  </a>
+                </li>
+                
+                <li id="addshift" style="display: none;">
+                  <a href="{% url 'addshift' %}">
+                    <span class="icon">
+                      <i class="fa-regular fa-calendar-plus fa-xl"></i>
+                    </span>
+                    <span class="title">Add Shift</span>
+                  </a>
+                </li>
+                
+                <li id="shift_list" style="display: none;">
+                  <a href="{% url 'shift_list' %}">
+                    <span class="icon">
+                      <i class="fa-solid fa-rectangle-list fa-xl"></i>
+                    </span>
+                    <span class="title">Shift List</span>
+                  </a>
+                </li>
                 
 
                 <li>
-                    <a href="{% url 'add_employee' %}">
+                  <a href="{% url 'present' %}">
                         <span class="icon">
-                          <i class="fa-solid fa-user-plus fa-xl"></i>
+                          <i class="fa-regular fa-calendar-plus fa-xl"></i>
                         </span>
-                        <span class="title">Add Employee</span>
+                        <span class="title">Master Data</span>
                     </a>
                 </li>
 
-                <li>
-                  <a href="{% url 'shift_list' %}">
-                      <span class="icon">
-                        <i class="fa-solid fa-rectangle-list fa-xl"></i>
-                      </span>
-                      <span class="title">Shift List</span>
-                  </a>
-              </li>
+
+
               <li>
                 <a href="{% url 'markattendance' %}">
                     <span class="icon">
                       <i class="fa-solid fa-calendar-check fa-xl"></i>
                     </span>
-                    <span class="title">Attendance</span>
+                    <span class="title">Add Attendance</span>
                 </a>
             </li>
+            <li>
+              <a href="{% url 'salarysheet' %}">
+                  <span class="icon">
+                    <i class="fa-solid fa-file-invoice-dollar fa-xl"></i>
+                  </span>
+                  <span class="title">SalarySheet</span>
+              </a>
+          </li>
+
+            <li>
+              <a href="{% url 'company_list' %}">
+                  <span class="icon">
+                    <i class="fa-solid fa-users fa-xl"></i>
+                  </span>
+                  <span class="title">Company Employees</span>
+              </a>
+          </li>
+
+          
             </ul>
         </div>
 
@@ -378,6 +420,122 @@ body {
           main.classList.toggle("active");
         };
     </script> 
+
+<script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Toggle Navigation
+    let toggle = document.querySelector('.toggle');
+    let navigation = document.querySelector('.navigation');
+    let main = document.querySelector('.main');
+
+    toggle.onclick = function () {
+      navigation.classList.toggle('active');
+      main.classList.toggle('active');
+    };
+
+    // Add hovered class to selected list item
+    let list = document.querySelectorAll('.navigation li');
+    function activeLink() {
+      list.forEach((item) => item.classList.remove('hovered'));
+      this.classList.add('hovered');
+    }
+    list.forEach((item) => item.addEventListener('mouseover', activeLink));
+
+    // Dropdown functionality for 'Shift'
+    document.getElementById('shift').addEventListener('click', function () {
+      var addShift = document.getElementById('addshift');
+      var shiftList = document.getElementById('shift_list');
+      var arrowShift = document.getElementById('shift-arrow');
+
+      addShift.style.display = addShift.style.display === 'none' ? 'block' : 'none';
+      shiftList.style.display = shiftList.style.display === 'none' ? 'block' : 'none';
+
+      if (addShift.style.display === 'none') {
+        arrowShift.setAttribute('name', 'chevron-down-outline');
+      } else {
+        arrowShift.setAttribute('name', 'chevron-up-outline');
+      }
+    });
+
+    // Add more event listeners as needed
+  });
+</script>
+
+
+<!-- <script>
+  // Add the event listener for the 'company' item click
+  document.getElementById('company').addEventListener('click', function() {
+      var customers = document.getElementById('add_company');
+      var messages = document.getElementById('list');
+      customers.style.display = customers.style.display === 'none' ? 'block' : 'none';
+      messages.style.display = messages.style.display === 'none' ? 'block' : 'none';
+
+      var arrow = document.getElementById('company-arrow'); // Ensure this matches your HTML ID
+      if (customers.style.display === 'none') {
+          arrow.setAttribute('name', 'chevron-down-outline'); // Down arrow
+      } else {
+          arrow.setAttribute('name', 'chevron-up-outline'); // Up arrow
+      }
+  });
+
+  // Add the event listener for the 'quotation' item click
+  document.getElementById('quotation').addEventListener('click', function() {
+      var createQuotation = document.getElementById('createquotation');
+      var detailedQuotation = document.getElementById('detailed_quotation');
+      var quotationList = document.getElementById('quotation_list');
+      
+      createQuotation.style.display = createQuotation.style.display === 'none' ? 'block' : 'none';
+      detailedQuotation.style.display = detailedQuotation.style.display === 'none' ? 'block' : 'none';
+      quotationList.style.display = quotationList.style.display === 'none' ? 'block' : 'none';
+
+      var arrowQuotation = document.getElementById('quotation-arrow'); // Ensure this matches your HTML ID
+      if (createQuotation.style.display === 'none') {
+          arrowQuotation.setAttribute('name', 'chevron-down-outline'); // Down arrow
+      } else {
+          arrowQuotation.setAttribute('name', 'chevron-up-outline'); // Up arrow
+      }
+  });
+
+  // Add the event listener for the 'shift' item click
+  document.getElementById('shift').addEventListener('click', function() {
+      var addShift = document.getElementById('addshift');
+      var shiftList = document.getElementById('shift_list');
+
+      addShift.style.display = addShift.style.display === 'none' ? 'block' : 'none';
+      shiftList.style.display = shiftList.style.display === 'none' ? 'block' : 'none';
+
+      var arrowShift = document.getElementById('shift-arrow'); // Ensure this matches your HTML ID
+      if (addShift.style.display === 'none') {
+          arrowShift.setAttribute('name', 'chevron-down-outline'); // Down arrow
+      } else {
+          arrowShift.setAttribute('name', 'chevron-up-outline'); // Up arrow
+      }
+  });
+
+  // Menu toggle
+  let toggle = document.querySelector('.toggle');
+  let navigation = document.querySelector('.navigation');
+  let main = document.querySelector('.main');
+
+  toggle.onclick = function () {
+      navigation.classList.toggle('active');
+      main.classList.toggle('active');
+  };
+
+  // Add hovered class in selected list item
+  let list = document.querySelectorAll('.navigation li');
+
+  function activeLink() {
+      list.forEach((item) =>
+          item.classList.remove('hovered'));
+      this.classList.add('hovered');
+  }
+
+  list.forEach((item) =>
+      item.addEventListener('mouseover', activeLink));
+</script> -->
+
 
     <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js"></script>
     <script>

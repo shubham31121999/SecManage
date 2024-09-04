@@ -1,0 +1,147 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f7f7f7;
+    }
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+    h1, h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+    h1 {
+        font-size: 2.5em;
+    }
+    h2 {
+        font-size: 1.5em;
+    }
+    select {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    ul#employee-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 20px;
+    }
+    ul#employee-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        animation: fadeIn 0.5s ease-in;
+    }
+    ul#employee-list li:last-child {
+        border-bottom: none;
+    }
+    ul#employee-list li:hover {
+        background-color: #f9f9f9;
+    }
+    a.btn {
+        background-color: #333;
+        color: white;
+        padding: 8px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    a.btn:hover {
+        background-color: #333;
+        transform: scale(1.05);
+    }
+    .loading {
+        display: none;
+        font-size: 16px;
+        color: #007bff;
+    }
+    /* @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    } */
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee List by Company</title>
+</head>
+<body>
+    <div class="card">
+        <h1>Select a Company</h1>
+        <select id="company-select" onchange="fetchEmployees()">
+            <option value="">Select a company</option>
+            {% for company in companies %}
+                <option value="{{ company.id }}">{{ company.user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <h2>Employee List</h2>
+        <ul id="employee-list">
+            <!-- Employee names and buttons will be populated here -->
+        </ul>
+    </div>
+
+    <script>
+        function fetchEmployees() {
+            const companyId = document.getElementById('company-select').value;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `/get-employees?company_id=${companyId}`, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const employees = JSON.parse(xhr.responseText);
+                    const employeeList = document.getElementById('employee-list');
+                    employeeList.innerHTML = '';
+
+                    employees.forEach(employee => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            (ID: ${employee.emp_id}) ${employee.first_name} ${employee.last_name}
+                            <div>
+                                <a href="/admin_monthly-attendance/${employee.emp_id}/" class="btn">View Monthly Attendance</a>
+                                <a href="/admin_advance/${employee.emp_id}/" class="btn">Advance</a>
+                                <a href="/mess/${employee.emp_id}/" class="btn">Mess</a>
+                                <a href="/admin_partial-uniform/${employee.emp_id}/" class="btn">Partial Uniform</a>
+                            </div>
+                        `;
+                        employeeList.appendChild(li);
+                    });
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</body>
+
+{% endblock content %}

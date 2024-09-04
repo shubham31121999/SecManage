@@ -1,0 +1,283 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+
+    .card h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    .card h2 {
+        text-align: center;
+        color: #333333;
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    .page-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* Form Container */
+    .form-container {
+        max-width: 800px; /* Adjust width as needed */
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    /* Form Group */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    /* Form Control */
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        padding: 10px 15px;
+        color: #fff;
+        background-color: #333333;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto; /* Centering the button */
+    }
+
+    .btn-submit:hover {
+        background-color: #444444; /* Slightly lighter on hover */
+    }
+
+    /* Table */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #333333;
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 20px;
+        margin-top: 30px;
+    }
+
+    /* Notification Pop Up */
+    /* CSS for Pop-ups */
+    .popup {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #4CAF50; /* Green background for success */
+        color: white; /* White text */
+        padding: 15px;
+        z-index: 1000; /* Ensure it appears above other content */
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .popup .close {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .popup.error {
+        background-color: #f44336; /* Red background for errors */
+    }
+</style>
+
+<body>
+    <div class="card">
+        <h1 class="page-title">Add Birthday for Company</h1>
+
+        <form action="{% url 'addbirth' %}" method="post" class="card" id="addbirth-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="birthday_date">Birthday Date:</label>
+                <input type="date" id="birthday_date" name="birthday_date" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="company">Company:</label>
+                <select id="company" name="company" class="form-control" required>
+                    {% for company in company_profiles %}
+                        <option value="{{ company.id }}">{{ company.user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn-submit">Add Birthday</button>
+        </form>
+
+        <h2 class="section-title">Existing Company Birthdays</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Birthday Date</th>
+                    <th>Description</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for birthday in birthdays %}
+                <tr>
+                    <td>{{ birthday.user_profile.user.email }}</td>
+                    <td>{{ birthday.birthday_date }}</td>
+                    <td>{{ birthday.description }}</td>
+                    <td>
+                        <div>
+                            <a href="{% url 'edit_birthday' birthday.id %}">
+                                <i class="fa-solid fa-pen-to-square fa-lg" style="color: black;"></i>
+                            </a>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <a href="{% url 'delete_birthday' birthday.id %}" onclick="return confirm('Are you sure you want to delete this birthday?');">
+                                <i class="fa-solid fa-trash-can fa-lg" style="color: black;"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No birthdays available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="success-popup" class="popup">
+        Birthday added successfully!
+        <span class="close">&times;</span>
+    </div>
+
+    <!-- Error Popup -->
+    <div id="error-popup" class="popup error">
+        <span id="error-message"></span>
+        <span class="close">&times;</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('addbirth-form');
+            const successPopup = document.getElementById('success-popup');
+            const errorPopup = document.getElementById('error-popup');
+            const errorMessage = document.getElementById('error-message');
+            const birthdaysList = document.getElementById('birthdays-list'); // Assuming you have a container for the list of birthdays
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showPopup(successPopup);
+                        form.reset(); // Reset form after successful submission
+                        updateBirthdaysList(data.newBirthday); // Update the birthdays list
+                    } else {
+                        errorMessage.textContent = data.error || 'An error occurred. Please try again.';
+                        showPopup(errorPopup);
+                    }
+                })
+                .catch(error => {
+                    errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+                    showPopup(errorPopup);
+                });
+            });
+
+            function showPopup(popup) {
+                popup.style.display = 'block';
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 3000); // Hide popup after 3 seconds
+            }
+
+            function updateBirthdaysList(newBirthday) {
+                if (birthdaysList) {
+                    // Create a new list item for the new birthday
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${newBirthday.birthday_date}: ${newBirthday.description}`;
+                    birthdaysList.appendChild(listItem);
+                }
+            }
+
+            document.querySelectorAll('.popup .close').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.parentElement.style.display = 'none';
+                });
+            });
+        });
+    </script>
+
+</body>
+{% endblock %}

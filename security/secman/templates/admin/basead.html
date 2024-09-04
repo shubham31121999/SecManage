@@ -260,6 +260,7 @@ body {
 
 
 
+
 </style>
 
 <body>
@@ -285,59 +286,199 @@ body {
                     </a>
                 </li>
 
-                <!-- <li>
-                  <div class="dropdown">
-                    <a href="#">
-                        <span class="icon">
-                          <i class="fa-solid fa-user-group fa-xl"></i>
-                        </span>
-                        <span class="title">Company</span>
-                    </a>
-                    <div class="dropdown-content">
-                      <span class="title">
-                        <a href="{% url 'add_company' %}">Add Company</a>
-                        <a href="{% url 'companyList' %}">Company List</a>
-                      </span>
-                    </div>
-                  </div>
-                </li> -->
-
                 <li id="company">
                   <a href="#">
                       <span class="icon">
-                        <i class="fa-solid fa-user-group fa-xl"></i>
+                          <i class="fa-solid fa-user-group fa-xl"></i>
                       </span>
-                      <span class="title">Company <ion-icon id="arrow" name="chevron-down-outline"></ion-icon></span>
+                      <span class="title">Company <ion-icon id="company-arrow" name="chevron-down-outline"></ion-icon></span>
                   </a>
               </li>
               
+              <li id="add_company" style="display: none;">
+                  <a href="{% url 'add_company' %}">
+                      <span class="icon">
+                        <i class="fa-solid fa-building fa-xl"></i>
+                      </span>
+                      <span class="title">Add Company</span>
+                  </a>
+              </li>
 
-                <li id="add_company" style="display: none;">
-                    <a href="{% url 'add_company' %}">
-                        <span class="icon">
-                          <i class="fa-solid fa-users fa-xl"></i>
-                        </span>
-                        <span class="title">Add Company</span>
-                    </a>
-                </li>
-
-                <li id="list" style="display: none;">
-                    <a href="{% url 'companyList' %}">
-                        <span class="icon">
+              <li id="list" style="display: none;">
+                <a href="{% url 'admin_company_list' %}">
+                    <span class="icon">
+                      <i class="fa-solid fa-users fa-xl"></i>
+                    </span>
+                    <span class="title">Company Employees</span>
+                </a>
+            </li>
+              
+              <!-- <li id="list" style="display: none;">
+                  <a href="{% url 'companyList' %}">
+                      <span class="icon">
                           <i class="fa-solid fa-list-check fa-xl"></i>
+                      </span>
+                      <span class="title">Company List</span>
+                  </a>
+              </li> -->
+
+              <li id="quotation">
+                <a href="#">
+                    <span class="icon">
+                        <i class="fa-solid fa-file-circle-plus fa-xl"></i>
+                    </span>
+                    <span class="title">Quotation <ion-icon id="quotation-arrow" name="chevron-down-outline"></ion-icon></span>
+                </a>
+            </li>
+            
+            <li id="createquotation" style="display: none;">
+                <a href="{% url 'createquotation' %}">
+                    <span class="icon">
+                        <i class="fa-solid fa-file-circle-plus fa-xl"></i>
+                    </span>
+                    <span class="title">Create Quotation</span>
+                </a>
+            </li>
+            
+            <li id="detailed_quotation" style="display: none;">
+                <a href="{% url 'quotation' %}">
+                    <span class="icon">
+                        <i class="fa-solid fa-file-invoice fa-xl"></i>
+                    </span>
+                    <span class="title">Detailed Quotation</span>
+                </a>
+            </li>
+            
+            <li id="quotation_list" style="display: none;">
+                <a href="{% url 'quotation_list' %}">
+                    <span class="icon">
+                        <i class="fa-solid fa-list-ul fa-xl"></i>
+                    </span>
+                    <span class="title">Quotation List</span>
+                </a>
+            </li>
+            
+
+                <li>
+                  <a href="{% url 'add_emp' %}">
+                      <span class="icon">
+                        <i class="fa-solid fa-user-plus fa-xl"></i>
+                      </span>
+                      <span class="title">Add Employee</span>
+                  </a>
+              </li>
+
+              <li>
+                <a href="{% url 'add_fo' %}">
+                    <span class="icon">
+                        <i class="fa-solid fa-person-rifle fa-2xl"></i>
+                    </span>
+                    <span class="title">Field Officer</span>
+                </a>
+            </li>
+            
+
+                <!-- <li>
+                  <a href="{% url 'adminsalarysheet' %}">
+                      <span class="icon">
+                        <i class="fa-solid fa-file-invoice-dollar fa-2xl"></i>
+                      </span>
+                      <span class="title">Salary</span>
+                  </a>
+              </li> -->
+
+
+              
+              <li id="shift">
+                <a href="#">
+                    <span class="icon">
+                      <i class="fa-solid fa-business-time fa-xl"></i>
+                    </span>
+                    <span class="title">Shift <ion-icon id="company-arrow" name="chevron-down-outline"></ion-icon></span>
+                </a>
+            </li>
+
+              <li id="addshift" style="display: none;">
+                <a href="{% url 'admin_addshift' %}">
+                    <span class="icon">
+                      <i class="fa-regular fa-calendar-plus fa-xl"></i>
+                    </span>
+                    <span class="title">Add Shift</span>
+                </a>
+            </li>
+
+            <li id="shiftlist" style="display: none;">
+                <a href="{% url 'admin_shift_list' %}">
+                    <span class="icon">
+                      <i class="fa-solid fa-rectangle-list fa-xl"></i>
+                    </span>
+                    <span class="title">Shift List</span>
+                </a>
+            </li>
+
+                   
+              <li>
+                <a href="{% url 'addbirth' %}">
+                    <span class="icon">
+                      <i class="fa-solid fa-cake-candles fa-xl"></i>
+                    </span>
+                    <span class="title">Add Birthday</span>
+                </a>
+            </li>
+
+              <li>
+                <a href="{% url 'advance_requests' %}">
+                    <span class="icon">
+                      <i class="fa-solid fa-hand-holding-dollar fa-xl"></i>
+                    </span>
+                    <span class="title">Advance Request</span>
+                </a>
+            </li>
+
+
+
+                
+
+                <li>
+                    <a href="{% url 'admin_markattendance' %}">
+                        <span class="icon">
+                          <i class="fa-solid fa-calendar-check fa-xl"></i>
                         </span>
-                        <span class="title">Company List</span>
+                        <span class="title">Attendance</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="{% url 'add_fo' %}">
+                    <a href="{% url 'admin_salarysheet' %}">
                         <span class="icon">
-                          <i class="fa-solid fa-person-rifle fa-2xl" ></i>
+                          <i class="fa-solid fa-file-invoice-dollar fa-xl"></i>
                         </span>
-                        <span class="title">Field Officer</span>
+                        <span class="title">Salary Sheet</span>
                     </a>
                 </li>
+
+                <li>
+                    <a href="{% url 'admin_present' %}">
+                        <span class="icon">
+                          <i class="fa-regular fa-calendar-plus fa-xl"></i>
+                        </span>
+                        <span class="title">Master Data</span>
+                    </a>
+                </li>
+
+                
+
+               
+
+                <!-- <li>
+                    <a href="{% url 'admin_company_list' %}">
+                        <span class="icon">
+                          <i class="fa-solid fa-users fa-xl"></i>
+                        </span>
+                        <span class="title">Company Employees</span>
+                    </a>
+                </li> -->
+
             </ul>
         </div>
 
@@ -398,7 +539,81 @@ body {
     </script> -->
 
     <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js"></script>
+
+
     <script>
+      // Add the event listener for the 'company' item click
+      document.getElementById('company').addEventListener('click', function() {
+          var customers = document.getElementById('add_company');
+          var messages = document.getElementById('list');
+          customers.style.display = customers.style.display === 'none' ? 'block' : 'none';
+          messages.style.display = messages.style.display === 'none' ? 'block' : 'none';
+  
+          var arrow = document.getElementById('company-arrow'); // Ensure this matches your HTML ID
+          if (customers.style.display === 'none') {
+              arrow.setAttribute('name', 'chevron-down-outline'); // Down arrow
+          } else {
+              arrow.setAttribute('name', 'chevron-up-outline'); // Up arrow
+          }
+      });
+
+      document.getElementById('shift').addEventListener('click', function() {
+          var customers = document.getElementById('addshift');
+          var messages = document.getElementById('shiftlist');
+          customers.style.display = customers.style.display === 'none' ? 'block' : 'none';
+          messages.style.display = messages.style.display === 'none' ? 'block' : 'none';
+  
+          var arrow = document.getElementById('company-arrow'); // Ensure this matches your HTML ID
+          if (customers.style.display === 'none') {
+              arrow.setAttribute('name', 'chevron-down-outline'); // Down arrow
+          } else {
+              arrow.setAttribute('name', 'chevron-up-outline'); // Up arrow
+          }
+      });
+  
+      // Add the event listener for the 'quotation' item click
+      document.getElementById('quotation').addEventListener('click', function() {
+          var createQuotation = document.getElementById('createquotation');
+          var detailedQuotation = document.getElementById('detailed_quotation');
+          var quotationList = document.getElementById('quotation_list');
+          
+          createQuotation.style.display = createQuotation.style.display === 'none' ? 'block' : 'none';
+          detailedQuotation.style.display = detailedQuotation.style.display === 'none' ? 'block' : 'none';
+          quotationList.style.display = quotationList.style.display === 'none' ? 'block' : 'none';
+  
+          var arrowQuotation = document.getElementById('quotation-arrow'); // Ensure this matches your HTML ID
+          if (createQuotation.style.display === 'none') {
+              arrowQuotation.setAttribute('name', 'chevron-down-outline'); // Down arrow
+          } else {
+              arrowQuotation.setAttribute('name', 'chevron-up-outline'); // Up arrow
+          }
+      });
+  
+      // Menu toggle
+      let toggle = document.querySelector('.toggle');
+      let navigation = document.querySelector('.navigation');
+      let main = document.querySelector('.main');
+  
+      toggle.onclick = function () {
+          navigation.classList.toggle('active');
+          main.classList.toggle('active');
+      };
+  
+      // Add hovered class in selected list item
+      let list = document.querySelectorAll('.navigation li');
+  
+      function activeLink() {
+          list.forEach((item) =>
+              item.classList.remove('hovered'));
+          this.classList.add('hovered');
+      }
+  
+      list.forEach((item) =>
+          item.addEventListener('mouseover', activeLink));
+  </script>
+  
+  
+    <!-- <script>
         // Add the event listener for the 'dashboard' item click
         document.getElementById('company').addEventListener('click', function() {
             var customers = document.getElementById('add_company');
@@ -435,6 +650,45 @@ body {
         list.forEach((item) =>
             item.addEventListener('mouseover', activeLink));
     </script>
+
+<script>
+  // Add the event listener for the 'dashboard' item click
+  document.getElementById('company').addEventListener('click', function() {
+      var customers = document.getElementById('createquotation');
+      var messages = document.getElementById('quotation');
+      var messages = document.getElementById('quotation_list');
+      customers.style.display = customers.style.display === 'none' ? 'block' : 'none';
+      messages.style.display = messages.style.display === 'none' ? 'block' : 'none';
+
+      if (customers.style.display === 'none') {
+        arrow.setAttribute('name', 'chevron-down-outline'); // Down arrow
+    } else {
+        arrow.setAttribute('name', 'chevron-up-outline'); // Up arrow
+    }
+  });
+
+  // Menu toggle
+  let toggle = document.querySelector('.toggle');
+  let navigation = document.querySelector('.navigation');
+  let main = document.querySelector('.main');
+
+  toggle.onclick = function () {
+      navigation.classList.toggle('active');
+      main.classList.toggle('active');
+  };
+
+  // Add hovered class in selected list item
+  let list = document.querySelectorAll('.navigation li');
+
+  function activeLink() {
+      list.forEach((item) =>
+          item.classList.remove('hovered'));
+      this.classList.add('hovered');
+  }
+
+  list.forEach((item) =>
+      item.addEventListener('mouseover', activeLink));
+</script> -->
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

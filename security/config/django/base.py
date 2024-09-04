@@ -138,3 +138,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 from config.settings.celery import *
+
+# config/base.py or your settings module
+
+# settings.py or base.py
+
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'update-salary-details-daily': {
+        'task': 'secman.tasks.update_salary_details_based_on_attendance',
+        'schedule': crontab(hour=0, minute=0),  # Runs daily at midnight
+    },
+}

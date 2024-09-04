@@ -1,0 +1,584 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<head>
+    <title>Detailed Quotation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .card {
+            width: 95%;
+            margin: 2% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .card h1 {
+            text-align: center;
+            color: #333333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group > div {
+            flex: 1;
+        }
+
+        label {
+            font-size: 14px;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            border-color: #312929;
+            outline: none;
+            box-shadow: 0 0 8px rgba(49, 41, 41, 0.5);
+            transform: scale(1.02);
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #312929;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #000000;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            background-color: #2e3741;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .form-group > div {
+            width: 48%; /* Adjust width to fit two fields in one row */
+        }
+
+        .section-heading {
+            background-color: #333333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .section-divider {
+            border-right: 1px solid #ddd;
+        }
+
+        
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        .popup.error {
+            background-color: #dc3545;
+        }
+
+        .popup .close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Detailed Quotation</h1>
+        <form method="post" action="{% url 'quotation' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <div>
+                    <label for="company">Company Name:</label>
+                    <input type="text" name="company" id="company" required>
+                </div>
+            </div>
+
+            <!-- Security Guard Section -->
+            <div class="section-heading">Security Guard Details</div>
+            <div class="form-group">
+                <div>
+                    <label for="guard_basic_pay">Guard Basic Pay:</label>
+                    <input type="text" id="guard_basic_pay" name="guard_basic_pay">
+                </div>
+                <div>
+                    <label for="guard_special_allowance">Guard Special Allowance:</label>
+                    <input type="text" id="guard_special_allowance" name="guard_special_allowance">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_total_a">Guard Total A:</label>
+                    <input type="text" id="guard_total_a" name="guard_total_a">
+                </div>
+                <div>
+                    <label for="guard_conveyance_allowance">Guard Conveyance Allowance:</label>
+                    <input type="text" id="guard_conveyance_allowance" name="guard_conveyance_allowance">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_education_allowance">Guard Education Allowance:</label>
+                    <input type="text" id="guard_education_allowance" name="guard_education_allowance">
+                </div>
+                <div>
+                    <label for="guard_travelling_allowance">Guard Travelling Allowance:</label>
+                    <input type="text" id="guard_travelling_allowance" name="guard_travelling_allowance">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_house_duty">Guard House Duty:</label>
+                    <input type="text" id="guard_house_duty" name="guard_house_duty">
+                </div>
+                <div>
+                    <label for="guard_total_b">Guard Total B:</label>
+                    <input type="text" id="guard_total_b" name="guard_total_b">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_washing_allowance">Guard Washing Allowance:</label>
+                    <input type="text" id="guard_washing_allowance" name="guard_washing_allowance">
+                </div>
+                <div>
+                    <label for="guard_hra">Guard HRA:</label>
+                    <input type="text" id="guard_hra" name="guard_hra">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_sub_total_c">Guard Sub Total C:</label>
+                    <input type="text" id="guard_sub_total_c" name="guard_sub_total_c">
+                </div>
+                <div>
+                    <label for="guard_pf">Guard PF:</label>
+                    <input type="text" id="guard_pf" name="guard_pf">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_gratuity">Guard Gratuity:</label>
+                    <input type="text" id="guard_gratuity" name="guard_gratuity">
+                </div>
+                <div>
+                    <label for="guard_leave_with_wages">Guard Leave with Wages:</label>
+                    <input type="text" id="guard_leave_with_wages" name="guard_leave_with_wages">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_esic">Guard ESIC:</label>
+                    <input type="text" id="guard_esic" name="guard_esic">
+                </div>
+                <div>
+                    <label for="guard_paid_holiday">Guard Paid Holiday:</label>
+                    <input type="text" id="guard_paid_holiday" name="guard_paid_holiday">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_bonus">Guard Bonus:</label>
+                    <input type="text" id="guard_bonus" name="guard_bonus">
+                </div>
+                <div>
+                    <label for="guard_uniform">Guard Uniform:</label>
+                    <input type="text" id="guard_uniform" name="guard_uniform">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_total_c">Guard Total C:</label>
+                    <input type="text" id="guard_total_c" name="guard_total_c">
+                </div>
+                <div>
+                    <label for="guard_service_charges">Guard Service Charges:</label>
+                    <input type="text" id="guard_service_charges" name="guard_service_charges">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="guard_grand_total_per_month">Guard Grand Total per Month:</label>
+                    <input type="text" id="guard_grand_total_per_month" name="guard_grand_total_per_month">
+                </div>
+            </div>
+
+            <!-- Supervisor Section -->
+            <div class="section-heading">Supervisor Details</div>
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_basic_pay">Basic Pay:</label>
+                    <input type="number" step="0.01" name="supervisor_basic_pay" id="supervisor_basic_pay" required>
+                </div>
+                <div>
+                    <label for="supervisor_special_allowance">Special Allowance:</label>
+                    <input type="number" step="0.01" name="supervisor_special_allowance" id="supervisor_special_allowance" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_total_a">Total A:</label>
+                    <input type="number" step="0.01" name="supervisor_total_a" id="supervisor_total_a" required>
+                </div>
+                <div>
+                    <label for="supervisor_conveyance_allowance">Conveyance Allowance:</label>
+                    <input type="number" step="0.01" name="supervisor_conveyance_allowance" id="supervisor_conveyance_allowance" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_education_allowance">Education Allowance:</label>
+                    <input type="number" step="0.01" name="supervisor_education_allowance" id="supervisor_education_allowance" required>
+                </div>
+                <div>
+                    <label for="supervisor_travelling_allowance">Travelling Allowance:</label>
+                    <input type="number" step="0.01" name="supervisor_travelling_allowance" id="supervisor_travelling_allowance" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_house_duty">House Duty:</label>
+                    <input type="number" step="0.01" name="supervisor_house_duty" id="supervisor_house_duty" required>
+                </div>
+                <div>
+                    <label for="supervisor_total_b">Total B:</label>
+                    <input type="number" step="0.01" name="supervisor_total_b" id="supervisor_total_b" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_washing_allowance">Washing Allowance:</label>
+                    <input type="number" step="0.01" name="supervisor_washing_allowance" id="supervisor_washing_allowance" required>
+                </div>
+                <div>
+                    <label for="supervisor_hra">HRA:</label>
+                    <input type="number" step="0.01" name="supervisor_hra" id="supervisor_hra" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_sub_total_c">Sub Total C:</label>
+                    <input type="number" step="0.01" name="supervisor_sub_total_c" id="supervisor_sub_total_c" required>
+                </div>
+                <div>
+                    <label for="supervisor_pf">PF:</label>
+                    <input type="number" step="0.01" name="supervisor_pf" id="supervisor_pf" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_gratuity">Gratuity:</label>
+                    <input type="number" step="0.01" name="supervisor_gratuity" id="supervisor_gratuity" required>
+                </div>
+                <div>
+                    <label for="supervisor_leave_with_wages">Leave with Wages:</label>
+                    <input type="number" step="0.01" name="supervisor_leave_with_wages" id="supervisor_leave_with_wages" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_esic">ESIC:</label>
+                    <input type="number" step="0.01" name="supervisor_esic" id="supervisor_esic" required>
+                </div>
+                <div>
+                    <label for="supervisor_paid_holiday">Paid Holiday:</label>
+                    <input type="number" step="0.01" name="supervisor_paid_holiday" id="supervisor_paid_holiday" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_bonus">Bonus:</label>
+                    <input type="number" step="0.01" name="supervisor_bonus" id="supervisor_bonus" required>
+                </div>
+                <div>
+                    <label for="supervisor_uniform">Uniform:</label>
+                    <input type="number" step="0.01" name="supervisor_uniform" id="supervisor_uniform" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_total_c">Total C:</label>
+                    <input type="number" step="0.01" name="supervisor_total_c" id="supervisor_total_c" required>
+                </div>
+                <div>
+                    <label for="supervisor_service_charges">Service Charges:</label>
+                    <input type="number" step="0.01" name="supervisor_service_charges" id="supervisor_service_charges" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label for="supervisor_grand_total_per_month">Grand Total per Month:</label>
+                    <input type="number" step="0.01" name="supervisor_grand_total_per_month" id="supervisor_grand_total_per_month" required>
+                </div>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+<!-- Success Popup -->
+<div id="success-popup" class="popup" style="display:none;">
+    <p>Quotation Created Successfully!</p>
+    <button class="close">X</button>
+</div>
+
+<!-- Error Popup -->
+<div id="error-popup" class="popup" style="display:none;">
+    <p id="error-message">An error occurred. Please try again.</p>
+    <button class="close">X</button>
+</div>
+
+<script>
+    function calculateGuardTotals() {
+        var basicPay = parseFloat(document.getElementById('supervisor_basic_pay').value) || 0;
+        var specialAllowance = parseFloat(document.getElementById('supervisor_special_allowance').value) || 0;
+        var paid_holiday = parseFloat(document.getElementById('supervisor_paid_holiday').value) || 0;
+        var uniform = parseFloat(document.getElementById('supervisor_uniform').value) || 0;
+
+        var totalA = basicPay + specialAllowance;
+        document.getElementById('supervisor_total_a').value = totalA.toFixed(2);
+
+        var conveyanceAllowance = parseFloat(document.getElementById('supervisor_conveyance_allowance').value) || 0;
+        var educationAllowance = parseFloat(document.getElementById('supervisor_education_allowance').value) || 0;
+        var travellingAllowance = parseFloat(document.getElementById('supervisor_travelling_allowance').value) || 0;
+        var houseDuty = parseFloat(document.getElementById('supervisor_house_duty').value) || 0;
+        var totalB = totalA + conveyanceAllowance + educationAllowance + travellingAllowance + houseDuty;
+        document.getElementById('supervisor_total_b').value = totalB.toFixed(2);
+
+        let washingallowance = parseFloat(document.getElementById('supervisor_washing_allowance').value) || 0; 
+
+        var hra = 0.05 * totalA;
+        document.getElementById('supervisor_hra').value = hra.toFixed(2);
+
+        let subTotalC = totalB + washingallowance + hra;
+        document.getElementById('supervisor_sub_total_c').value = subTotalC.toFixed(2);
+
+        var pf = 0.13 * totalA;
+        document.getElementById('supervisor_pf').value = pf.toFixed(2);
+
+        var gratuity = 0.0481 * totalA;
+        document.getElementById('supervisor_gratuity').value = gratuity.toFixed(2);
+
+        var leavewithwages = 0;
+        document.getElementById('supervisor_leave_with_wages').value = leavewithwages.toFixed(2);
+
+        var ESIC = 0.0325 * totalA;
+        document.getElementById('supervisor_esic').value = ESIC.toFixed(2);
+
+        let bonus = 0;
+        document.getElementById('supervisor_bonus').value = bonus.toFixed(2);
+
+        var totalC = subTotalC + pf + gratuity + leavewithwages + paid_holiday + ESIC + bonus + uniform;
+        document.getElementById('supervisor_total_c').value = totalC.toFixed(2);
+
+        let servicecharge = 0.1 * totalC;
+        document.getElementById('supervisor_service_charges').value = servicecharge.toFixed(2);
+
+        let grand_total = totalC + servicecharge;
+        document.getElementById('supervisor_grand_total_per_month').value = grand_total.toFixed(2);
+    }
+
+    function calculateSupervisorTotals() {
+        var basicPay = parseFloat(document.getElementById('guard_basic_pay').value) || 0;
+        var specialAllowance = parseFloat(document.getElementById('guard_special_allowance').value) || 0;
+        var paid_holiday = parseFloat(document.getElementById('guard_paid_holiday').value) || 0;
+        var uniform = parseFloat(document.getElementById('guard_uniform').value) || 0;
+
+        var totalA = basicPay + specialAllowance;
+        document.getElementById('guard_total_a').value = totalA.toFixed(2);
+
+        var conveyanceAllowance = parseFloat(document.getElementById('guard_conveyance_allowance').value) || 0;
+        var educationAllowance = parseFloat(document.getElementById('guard_education_allowance').value) || 0;
+        var travellingAllowance = parseFloat(document.getElementById('guard_travelling_allowance').value) || 0;
+        var houseDuty = parseFloat(document.getElementById('guard_house_duty').value) || 0;
+        var totalB = totalA + conveyanceAllowance + educationAllowance + travellingAllowance + houseDuty;
+        document.getElementById('guard_total_b').value = totalB.toFixed(2);
+
+        let washingallowance = parseFloat(document.getElementById('guard_washing_allowance').value) || 0; 
+
+        var hra = 0.05 * totalA;
+        document.getElementById('guard_hra').value = hra.toFixed(2);
+
+        let subTotalC = totalB + washingallowance + hra;
+        document.getElementById('guard_sub_total_c').value = subTotalC.toFixed(2);
+
+        var pf = 0.13 * totalA;
+        document.getElementById('guard_pf').value = pf.toFixed(2);
+
+        var gratuity = 0.0481 * totalA;
+        document.getElementById('guard_gratuity').value = gratuity.toFixed(2);
+
+        var leavewithwages = 0;
+        document.getElementById('guard_leave_with_wages').value = leavewithwages.toFixed(2);
+
+        var ESIC = 0.0325 * totalA;
+        document.getElementById('guard_esic').value = ESIC.toFixed(2);
+
+        let bonus = 0;
+        document.getElementById('guard_bonus').value = bonus.toFixed(2);
+
+        var totalC = subTotalC + pf + gratuity + leavewithwages + paid_holiday + ESIC + bonus + uniform;
+        document.getElementById('guard_total_c').value = totalC.toFixed(2);
+
+        let servicecharge = 0.1 * totalC;
+        document.getElementById('guard_service_charges').value = servicecharge.toFixed(2);
+
+        let grand_total = totalC + servicecharge;
+        document.getElementById('guard_grand_total_per_month').value = grand_total.toFixed(2);
+    }
+
+    function updateCalculations() {
+        calculateGuardTotals();
+        calculateSupervisorTotals();
+        // Show notification after calculations are done
+        alert('Quotation Created successfully');
+    }
+
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', updateCalculations);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('shift-form');
+        const successPopup = document.getElementById('success-popup');
+        const errorPopup = document.getElementById('error-popup');
+        const errorMessage = document.getElementById('error-message');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showPopup(successPopup);
+                    form.reset(); // Reset form after successful submission
+                } else {
+                    errorMessage.textContent = data.error || 'An error occurred. Please try again.';
+                    showPopup(errorPopup);
+                }
+            })
+            .catch(error => {
+                errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+                showPopup(errorPopup);
+            });
+        });
+
+        // Show popup and hide it after a few seconds
+        function showPopup(popup) {
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 3000); // Hide popup after 3 seconds
+        }
+
+        // Close popup on button click
+        document.querySelectorAll('.popup .close').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+    });
+</script>
+
+</body>
+
+{% endblock %}

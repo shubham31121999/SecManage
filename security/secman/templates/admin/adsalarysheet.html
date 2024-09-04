@@ -1,0 +1,190 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Sheet</title>
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .card {
+            width: 95%;
+            margin: 2% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin: 20px 0;
+            animation: slideIn 1s ease-in-out;
+        }
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin: 0 2%;
+            padding: 20px;
+            animation: fadeIn 1s ease-in;
+            border-radius: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #333;
+            color: #ffffff;
+            z-index: 1;
+        }
+        td {
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+        td:hover {
+            background-color: #e9ecef;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            background: transparent;
+            padding: 5px;
+        }
+        input:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Salary Sheet</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Basic Salary</th>
+                        <th>Special Allowance</th>
+                        <th>Total</th>
+                        <th>Conveyance Allowance</th>
+                        <th>Education Allowance</th>
+                        <th>Travelling Allowance</th>
+                        <th>Hours Daily Duty</th>
+                        <th>Total (B)</th>
+                        <th>HRA</th>
+                        <th>PF</th>
+                        <th>Gratuity</th>
+                        <th>Leave With Wages</th>
+                        <th>ESIC</th>
+                        <th>Paid Holiday</th>
+                        <th>Bonus</th>
+                        <th>Uniform</th>
+                        <th>Advance Payment</th>
+                        <th>Food Allowance</th>
+                        <th>Partial Uniform</th>
+                        <th>Total (C)</th>
+                        <th>Actual Salary</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for salary in salary_with_actual %}
+                    <tr>
+                        <td>{{ salary.employee }}</td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="basic_salary" value="{{ salary.basic_salary }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="special_allowance" value="{{ salary.special_allowance }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="total" value="{{ salary.total }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="conveyance_allowance" value="{{ salary.conveyance_allowance }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="education_allowance" value="{{ salary.education_allowance }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="travelling_allowance" value="{{ salary.travelling_allowance }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="hours_daily_duty" value="{{ salary.hours_daily_duty }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="total_b" value="{{ salary.total_b }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="hra" value="{{ salary.hra }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="pf" value="{{ salary.pf }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="gratuity" value="{{ salary.gratuity }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="leave_with_wages" value="{{ salary.leave_with_wages }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="esic" value="{{ salary.esic }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="paid_holiday" value="{{ salary.paid_holiday }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="bonus" value="{{ salary.bonus }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="uniform" value="{{ salary.uniform }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="advance_payment" value="{{ salary.advance_payment }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="food_allowance" value="{{ salary.food_allowance }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="price_partial_uniform" value="{{ salary.price_partial_uniform }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="total_c" value="{{ salary.total_c }}"></td>
+                        <td><input type="text" data-id="{{ salary.id }}" data-field="actual_salary" value="{{ salary.actual_salary }}"></td>
+                        <td><button class="update-button" data-id="{{ salary.id }}">Update</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const updateButtons = document.querySelectorAll('.update-button');
+    
+            updateButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const employeeId = this.getAttribute('data-id');
+                    const fields = document.querySelectorAll(`tr td input[data-id="${employeeId}"]`);
+                    const data = { id: employeeId };
+    
+                    fields.forEach(field => {
+                        data[field.getAttribute('data-field')] = field.value;
+                    });
+    
+                    fetch('/update_salary/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Salary updated successfully!');
+                        } else {
+                            alert('Failed to update salary.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                    });
+                });
+            });
+        });
+    </script>
+
+{% endblock content %}

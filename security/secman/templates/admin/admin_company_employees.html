@@ -1,0 +1,182 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees of {{ company.user.email }}</title>
+</head>
+
+<style>
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+
+    .card h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            animation: grow 1s ease-in-out;
+        }
+
+        table, th, td {
+            border: 1px solid #dddddd;
+        }
+
+        th, td {
+            padding: 20px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #312929;
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        td {
+            position: relative;
+        }
+
+        td:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 2px;
+            width: 0;
+            background-color: #000000;
+            transition: width 0.4s ease-in-out;
+        }
+
+        td:hover:before {
+            width: 100%;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+
+        tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+
+     button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #312929;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #000000;
+        transform: scale(1.05);
+    }
+
+    button:active {
+        background-color: #2e3741;
+    }
+
+    
+</style>
+<body>
+    <div class="card">
+    <h1>Employees at {{ company.user.email }}</h1>
+
+    <h2>Supervisors</h2>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supervisor in supervisors %}
+            <tr>
+                <td>{{ supervisor.first_name }} {{ supervisor.last_name }}</td>
+                <td>{{ supervisor.email }}</td>
+                <td>{{ supervisor.contact_number }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No supervisors assigned to this company.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Security Guards</h2>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for guard in guards %}
+            <tr>
+                <td>{{ guard.first_name }} {{ guard.last_name }}</td>
+                <td>{{ guard.email }}</td>
+                <td>{{ guard.contact_number }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No security guards assigned to this company.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+{% endblock %}
+

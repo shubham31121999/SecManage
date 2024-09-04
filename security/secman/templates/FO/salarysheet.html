@@ -1,0 +1,148 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin: 20px 0;
+            animation: slideIn 1s ease-in-out;
+        }
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin: 0 2%;
+            padding: 20px;
+            animation: fadeIn 1s ease-in;
+            border-radius: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #333;
+            color: #ffffff;
+            z-index: 1;
+        }
+        td {
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+        td:hover {
+            background-color: #e9ecef;
+        }
+        /* @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        } */
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>Salary Sheet</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Basic Salary</th>
+                    <th>Special Allowance</th>
+                    <th>Total</th>
+                    <th>Conveyance Allowance</th>
+                    <th>Education Allowance</th>
+                    <th>Travelling Allowance</th>
+                    <th>Hours Daily Duty</th>
+                    <th>Total (B)</th>
+                    <th>HRA</th>
+                    <th>PF</th>
+                    <th>Gratuity</th>
+                    <th>Leave With Wages</th>
+                    <th>ESIC</th>
+                    <th>Paid Holiday</th>
+                    <th>Bonus</th>
+                    <th>Uniform</th>
+                    <th>Advance Payment</th>
+                    <th>Food Allowance</th>
+                    <th>Partial Uniform</th>
+                    <th>Total (C)</th>
+                    <th>Actual Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for salary in salary_with_actual %}
+                <tr>
+                    <td>{{ salary.employee }}</td>
+                    <td>{{ salary.basic_salary }}</td>
+                    <td>{{ salary.special_allowance }}</td>
+                    <td>{{ salary.total }}</td>
+                    <td>{{ salary.conveyance_allowance }}</td>
+                    <td>{{ salary.education_allowance }}</td>
+                    <td>{{ salary.travelling_allowance }}</td>
+                    <td>{{ salary.hours_daily_duty }}</td>
+                    <td>{{ salary.total_b }}</td>
+                    <td>{{ salary.hra }}</td>
+                    <td>{{ salary.pf }}</td>
+                    <td>{{ salary.gratuity }}</td>
+                    <td>{{ salary.leave_with_wages }}</td>
+                    <td>{{ salary.esic }}</td>
+                    <td>{{ salary.paid_holiday }}</td>
+                    <td>{{ salary.bonus }}</td>
+                    <td>{{ salary.uniform }}</td>
+                    <td>{{ salary.advance_payment }}</td>
+                    <td>{{ salary.food_allowance }}</td>
+                    <td>{{ salary.price_partial_uniform }}</td>
+                    <td>{{ salary.total_c }}</td>
+                    <td>{{ salary.actual_salary }}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+{% endblock content %}

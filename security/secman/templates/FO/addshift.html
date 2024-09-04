@@ -86,6 +86,10 @@
             transform: scale(1.02);
         }
 
+        /* button:active {
+            background-color: #2e3741;
+        } */
+
         .popup {
             position: fixed;
             top: 20px;
@@ -130,7 +134,7 @@
 <body>
     <div class="card">
         <h1>Create a New Shift</h1>
-        <form method="post" id="shift-form">
+        <form method="post" action="{% url 'addshift' %}" id="shift-form">
             {% csrf_token %}
 
             <div class="form-group">
@@ -175,7 +179,7 @@
 
                 const formData = new FormData(form);
 
-                fetch("{% url 'addshift' %}", {
+                fetch(form.action, {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -186,19 +190,19 @@
                 .then(data => {
                     if (data.success) {
                         showPopup(successPopup);
-                        form.reset();
+                        form.reset(); // Reset form after successful submission
                     } else {
                         errorMessage.textContent = data.error || 'An error occurred. Please try again.';
                         showPopup(errorPopup);
                     }
                 })
                 .catch(error => {
-                    errorMessage.textContent = 'An error occurred. Please try again.';
+                    errorMessage.textContent = 'An unexpected error occurred. Please try again.';
                     showPopup(errorPopup);
                 });
             });
 
-            // Show popup function
+            // Close popups automatically after a few seconds
             function showPopup(popup) {
                 popup.style.display = 'block';
                 setTimeout(() => {

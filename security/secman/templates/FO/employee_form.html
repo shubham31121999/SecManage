@@ -209,12 +209,12 @@
                 <input type="text" name="emergency_contact2" id="emergency_contact2">
             </li>
             <li>
-                <label for="emergency_contact_relation1_address">Emergency Number 1 Address:</label>
-                <input type="text" name="emergency_contact_relation1_address" id="emergency_contact_relation1_address">
+                <label for="emergency_contact_relation1_name">Emergency Number 1 Name:</label>
+                <input type="text" name="emergency_contact_relation1_name" id="emergency_contact_relation1_name">
             </li>
             <li>
-                <label for="emergency_contact_relation2_address">Emergency Number 2 Address:</label>
-                <input type="text" name="emergency_contact_relation2_address" id="emergency_contact_relation2_address">
+                <label for="emergency_contact_relation2_name">Emergency Number 2 Name:</label>
+                <input type="text" name="emergency_contact_relation2_name" id="emergency_contact_relation2_name">
             </li>
             <li>
                 <label for="emergency_contact_relation1">Emergency Number 1 Relation:</label>
@@ -288,56 +288,59 @@
             </li>
 
             <li>
-                <label for="position">Position:</label>
-                <input type="text" name="position" id="position" required>
+                <label for="position">Positions:</label>
+                <select name="position" id="position" required>
+                    <option value="Security Guard">Security Guard</option>
+                    <option value="Supervisor">Supervisor</option>
+                </select>
             </li>
             
                 <li class="checkbox-group">
                     <label>Have you taken any security guard training course before?</label>
                     <ul class="emp">
-                        <li><input type="checkbox" name="security_guard_training" value="yes"> Yes</li>
-                        <li><input type="checkbox" name="security_guard_training" value="no"> No</li>
+                        <li><input type="radio" name="security_guard_training" value="yes"> Yes</li>
+                        <li><input type="radio" name="security_guard_training" value="no"> No</li>
                     </ul>
                 </li>
             
                 <li class="checkbox-group">
                     <label>Do you have any job/internship/experience as a security guard?</label>
                     <ul class="emp">
-                        <li><input type="checkbox" name="job_experience" value="yes"> Yes</li>
-                        <li><input type="checkbox" name="job_experience" value="no"> No</li>
+                        <li><input type="radio" name="job_experience" value="yes"> Yes</li>
+                        <li><input type="radio" name="job_experience" value="no"> No</li>
                     </ul>
                 </li>
             
                 <li class="checkbox-group">
                     <label>Pancard</label>
                     <ul class="emp">
-                        <li><input type="checkbox" name="pancard" value="yes"> Yes</li>
-                        <li><input type="checkbox" name="pancard" value="no"> No</li>
+                        <li><input type="radio" name="pancard" value="yes"> Yes</li>
+                        <li><input type="radio" name="pancard" value="no"> No</li>
                     </ul>
                 </li>
             
                 <li class="checkbox-group">
                     <label>Aadhar Card</label>
                     <ul class="emp">
-                        <li><input type="checkbox" name="aadhar" value="yes"> Yes</li>
-                        <li><input type="checkbox" name="aadhar" value="no"> No</li>
+                        <li><input type="radio" name="aadhar" value="yes"> Yes</li>
+                        <li><input type="radio" name="aadhar" value="no"> No</li>
                     </ul>
                 </li>
             
                 <li class="checkbox-group">
                     <label>Voter ID</label>
                     <ul class="emp">
-                        <li><input type="checkbox" name="voter" value="yes"> Yes</li>
-                        <li><input type="checkbox" name="voter" value="no"> No</li>
+                        <li><input type="radio" name="voter" value="yes"> Yes</li>
+                        <li><input type="radio" name="voter" value="no"> No</li>
                     </ul>
                 </li>
 
                 <li class="work-arrangements">
                     <label>Preferred Work Arrangements:</label>
                     <ul class="emp">
-                        <li><input type="checkbox" name="preferred_work_arrangements" value="full_time"> Full Time</li>
-                        <li><input type="checkbox" name="preferred_work_arrangements" value="weekends"> Weekends</li>
-                        <li><input type="checkbox" name="preferred_work_arrangements" value="part_time"> Part Time</li>
+                        <li><input type="radio" name="preferred_work_arrangements" value="full_time"> Full Time</li>
+                        <li><input type="radio" name="preferred_work_arrangements" value="weekends"> Weekends</li>
+                        <li><input type="radio" name="preferred_work_arrangements" value="part_time"> Part Time</li>
                     </ul>
                 </li>
             
@@ -542,17 +545,16 @@
                     <label for="service_charge">Service Charge:</label>
                     <input type="number" name="service_charge" id="service_charge" step="0.01" required>
                 </li>
-                <li>
-                    <label for="advance_payment">Advance Payment:</label>
-                    <input type="number" name="advance_payment" id="advance_payment" step="0.01" required>
-                </li>
-                
-                <li>
-                    <label for="food_allowance">Food Allowance:</label>
-                    <input type="number" name="food_allowance" id="food_allowance" step="0.01" required>
-                </li>
             
-                
+                <!-- <li>
+                    <label for="shift">Shift:</label>
+                    <select id="shift" name="shift" required>
+                        <option value="">Select Shift</option>
+                        {% for shift in shifts %}
+                            <option value="{{ shift.id }}">{{ shift.description }}</option>
+                        {% endfor %}
+                    </select>
+                </li> -->
             
                 <li>
                     <label for="company">Company:</label>
@@ -576,37 +578,109 @@
         const basicSalaryInput = document.getElementById('basic_salary');
         const specialAllowanceInput = document.getElementById('special_allowance');
         const totalInput = document.getElementById('total');
-
+        const conveyanceInput = document.getElementById('conveyance_allowance');
+        const educationInput = document.getElementById('education_allowance');
+        const travellingInput = document.getElementById('travelling_allowance');
+        const totalBInput = document.getElementById('total_b');
+        const hraInput = document.getElementById('hra');
+        const pfInput = document.getElementById('pf');
+        const gratuityInput = document.getElementById('gratuity');
+        const leaveWithWagesInput = document.getElementById('leave_with_wages');
+        const esicInput = document.getElementById('esic');
+        const paidHolidayInput = document.getElementById('paid_holiday');
+        const bonusInput = document.getElementById('bonus');
+        const uniformCheckbox = document.getElementById('uniform_checkbox');
+        const uniformInput = document.getElementById('uniform');
+        const serviceChargeInput = document.getElementById('service_charge');
+    
         // Function to calculate and update the total
         function updateTotal() {
             const basicSalary = parseFloat(basicSalaryInput.value) || 0;
             const specialAllowance = parseFloat(specialAllowanceInput.value) || 0;
             const total = basicSalary + specialAllowance;
-
-            // Update the total field
+    
+            // Update Total A field
             totalInput.value = total.toFixed(2);
+    
+            // Calculate and update HRA (5% of Total A)
+            const hra = total * 0.05;
+            hraInput.value = hra.toFixed(2);
+    
+            // Calculate and update PF (13% of Total A)
+            const pf = total * 0.13;
+            pfInput.value = pf.toFixed(2);
+    
+            // Calculate and update ESIC (3.25% of Total A)
+            const esic = total * 0.0325;
+            esicInput.value = esic.toFixed(2);
         }
-
+    
+        function updateTotalB() {
+            const conveyance = parseFloat(conveyanceInput.value) || 0;
+            const education = parseFloat(educationInput.value) || 0;
+            const travelling = parseFloat(travellingInput.value) || 0;
+            const totalB = conveyance + education + travelling;
+    
+            // Update Total B field
+            totalBInput.value = totalB.toFixed(2);
+        }
+    
+        function updateTotalC() {
+            // Get values for Total A, Total B and other fields
+            const totalA = parseFloat(totalInput.value) || 0;
+            const totalB = parseFloat(totalBInput.value) || 0;
+            const hra = parseFloat(hraInput.value) || 0;
+            const pf = parseFloat(pfInput.value) || 0;
+            const gratuity = parseFloat(gratuityInput.value) || 0;
+            const leaveWithWages = parseFloat(leaveWithWagesInput.value) || 0;
+            const esic = parseFloat(esicInput.value) || 0;
+            const paidHoliday = parseFloat(paidHolidayInput.value) || 0;
+            const bonus = parseFloat(bonusInput.value) || 0;
+            const uniformCheckbox = document.getElementById('uniform_checkbox').checked;
+            const uniform = parseFloat(uniformInput.value) || 0;
+    
+            // Calculate Total C
+            const totalC = totalA + totalB + hra + pf + gratuity + leaveWithWages + esic + paidHoliday + bonus + (uniformCheckbox ? uniform : 0);
+    
+            // Update Total C field
+            document.getElementById('total_c').value = totalC.toFixed(2);
+    
+            // Calculate and update Service Charge (10% of Total C)
+            const serviceCharge = totalC * 0.10;
+            serviceChargeInput.value = serviceCharge.toFixed(2);
+        }
+    
+        // Function to update the uniform field based on checkbox state
+        function updateUniformValue() {
+            uniformInput.value = uniformCheckbox.checked ? '1500.00' : '0.00';
+            updateTotalC(); // Recalculate Total C after updating uniform
+        }
+    
         // Attach event listeners to the input fields to trigger the update when values change
         basicSalaryInput.addEventListener('input', updateTotal);
         specialAllowanceInput.addEventListener('input', updateTotal);
-
-
-        const uniformCheckbox = document.getElementById('uniform_checkbox');
-        const uniformInput = document.getElementById('uniform');
-
-        // Function to update the uniform field based on checkbox state
-        function updateUniformValue() {
-            if (uniformCheckbox.checked) {
-                uniformInput.value = '1500.00';
-            } else {
-                uniformInput.value = '0.00';
-            }
-        }
-
-        // Attach an event listener to the checkbox to trigger the update
+        conveyanceInput.addEventListener('input', updateTotalB);
+        educationInput.addEventListener('input', updateTotalB);
+        travellingInput.addEventListener('input', updateTotalB);
+        totalInput.addEventListener('input', updateTotalC);
+        totalBInput.addEventListener('input', updateTotalC);
+        hraInput.addEventListener('input', updateTotalC);
+        pfInput.addEventListener('input', updateTotalC);
+        gratuityInput.addEventListener('input', updateTotalC);
+        leaveWithWagesInput.addEventListener('input', updateTotalC);
+        esicInput.addEventListener('input', updateTotalC);
+        paidHolidayInput.addEventListener('input', updateTotalC);
+        bonusInput.addEventListener('input', updateTotalC);
         uniformCheckbox.addEventListener('change', updateUniformValue);
+        uniformInput.addEventListener('input', updateTotalC);
+    
+        // Initial call to update all values on page load
+        updateTotal();
+        updateTotalB();
+        updateTotalC();
     </script>
+    
+    
 </div>
 {% endblock %}
 

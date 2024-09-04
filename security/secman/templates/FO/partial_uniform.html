@@ -1,0 +1,78 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+
+<style>
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+    form {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-bottom: 10px;
+        font-size: 1.1em;
+        color: #333;
+    }
+    input {
+        padding: 10px;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    button {
+        padding: 10px;
+        font-size: 1.1em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="card">
+    <h1>Update Partial Uniform for {{ employee.first_name }} {{ employee.last_name }}</h1>
+    
+    <form method="POST" action="{% url 'partial_uniform' employee.emp_id %}">
+        {% csrf_token %}
+
+        <label for="partialuniform">Uniform Item:</label>
+        <select id="partialuniform" name="partialuniform">
+            <option value="shirt" {% if employees.partialuniform == "shirt" %}selected{% endif %}>Shirt</option>
+            <option value="pant" {% if employees.partialuniform == "pant" %}selected{% endif %}>Pant</option>
+            <option value="belt" {% if employees.partialuniform == "belt" %}selected{% endif %}>Belt</option>
+            <option value="stick" {% if employees.partialuniform == "stick" %}selected{% endif %}>Stick</option>
+            <option value="whistle" {% if employees.partialuniform == "whistle" %}selected{% endif %}>Whistle</option>
+            <option value="hat" {% if employees.partialuniform == "hat" %}selected{% endif %}>Hat</option>
+        </select>
+
+        <label for="price_partial_uniform">Price:</label>
+        <input type="text" id="price_partial_uniform" name="price_partial_uniform" value="{{ salary_detail.price_partial_uniform }}" required>
+
+        <button type="submit" class="btn">Update Partial Uniform</button>
+    </form>
+</div>
+
+{% endblock content %}

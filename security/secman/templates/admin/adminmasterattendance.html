@@ -1,0 +1,213 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ employee.first_name }} {{ employee.last_name }} - Monthly Attendance</title>
+</head>
+
+<style>
+    h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+
+    table {
+        width: 95%;
+        margin-left: 30px;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 20px;
+        animation: grow 1s ease-in-out;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 20px;
+        text-align: left;
+        border-bottom: 1px solid #dddddd;
+    }
+
+    th {
+        background-color: #312929;
+        color: #ffffff;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e9ecef;
+    }
+
+    td {
+        position: relative;
+    }
+
+    th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    th:last-child {
+        border-top-right-radius: 10px;
+    }
+
+    tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+
+    tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .form-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        width: 100%;
+        max-width: 600px;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .form-group {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .form-group:last-child {
+        margin-right: 0;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group input[type="number"],
+    .form-group select {
+        width: 100%;
+        padding: 10px;
+        font-size: 1.1em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-group input[type="number"]:focus,
+    .form-group select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .form-button-group {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .form-button-group button {
+        width: 20%;
+        padding: 10px;
+        background-color: #333333;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .form-button-group button:hover {
+        background-color: #000;
+        transform: scale(1.04);
+    }
+</style>
+
+<body>
+    <div class="card">
+        <h1>{{ employee.first_name }} {{ employee.last_name }}'s Attendance for {{ month }}/{{ year }}</h1>
+
+        <!-- Form to select month and year -->
+        <form method="GET" action="">
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="year">Year:</label>
+                        <input type="number" id="year" name="year" value="{{ year }}" min="2000" max="9999">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="month">Month:</label>
+                        <select id="month" name="month">
+                            {% for num, name in months %}
+                                <option value="{{ num }}" {% if num == month %}selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-button-group">
+                    <button type="submit">Filter</button>
+                </div>
+            </div>
+        </form>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Shift</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_records %}
+                    <tr>
+                        <td>{{ record.date }}</td>
+                        <td>{{ record.status }}</td>
+                        <td>{{ record.shift }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{% url 'present' %}">Back to Employee List</a>
+    </div>
+</body>
+{% endblock content %}

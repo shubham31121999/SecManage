@@ -1,0 +1,66 @@
+{% extends 'FO/basefo.html' %}
+
+{% block content %}
+
+<style>
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+    form {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-bottom: 10px;
+        font-size: 1.1em;
+        color: #333;
+    }
+    input {
+        padding: 10px;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    button {
+        padding: 10px;
+        font-size: 1.1em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="card">
+    <h1>Update Food Allowance for {{ employee.first_name }} {{ employee.last_name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="food_allowance">Current Food Allowance:</label>
+        <input type="text" id="food_allowance" name="food_allowance" value="{{ salary_detail.food_allowance }}">
+
+        <button type="submit">Update Food Allowance</button>
+    </form>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,139 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<style>
+    h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    .card {
+            width: 95%;
+            margin: 2% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
+    table {
+        width: 95%;
+        margin-left: 30px;
+        /* margin-right: 0px; */
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 20px;
+        animation: grow 1s ease-in-out;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    th, td {
+        padding: 20px;
+        text-align: left;
+        border-bottom: 1px solid #dddddd;
+        /* transition: background-color 0.3s ease-in-out;    */
+    }
+    th {
+        background-color: #312929;
+        color: #ffffff;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    tr:hover {
+        background-color: #e9ecef;
+    }
+    td {
+        position: relative;
+    }
+    td:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background-color: #000000;
+        /* transition: width 0.4s ease-in-out; */
+    }
+    td:hover:before {
+        width: 100%;
+    }
+    th:first-child {
+        border-top-left-radius: 10px;
+    }
+    th:last-child {
+        border-top-right-radius: 10px;
+    }
+    tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+    tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+
+    /* @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        } */
+
+    .btn-create-shift {
+        display: block;
+        width: 95%;
+        margin-top: 2%;
+        margin-left: 28px;
+        padding: 10px;
+        background-color: #333333;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-size: 16px;
+        text-align: center;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-create-shift:hover {
+        background-color: #000;
+        transform: scale(1.04);
+    }
+</style>
+
+<body>
+    <div class="card">
+        <h1>Shift List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>In Time</th>
+                    <th>Out Time</th>
+                    <th>Total Time (hrs)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shift in shifts %}
+                <tr>
+                    <td>{{ shift.description }}</td>
+                    <td>{{ shift.intime }}</td>
+                    <td>{{ shift.outtime }}</td>
+                    <td>{{ shift.shift_total_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'admin_addshift' %}" class="btn-create-shift">Create New Shift</a>
+    </div>
+</body>
+
+{% endblock %}

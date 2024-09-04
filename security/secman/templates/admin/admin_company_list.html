@@ -1,0 +1,356 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+<head>
+    <title>Company List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+
+    .card h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+        /* h1 {
+            text-align: center;
+            color: #333333;
+            font-size: 2.5em;
+            margin: 20px 0;
+            animation: slideIn 1s ease-in-out;
+        } */
+
+        table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            animation: grow 1s ease-in-out;
+        }
+
+        table, th, td {
+            border: 1px solid #dddddd;
+        }
+
+        th, td {
+            padding: 20px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #312929;
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        td {
+            position: relative;
+        }
+
+        td:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 2px;
+            width: 0;
+            background-color: #000000;
+            transition: width 0.4s ease-in-out;
+        }
+
+        td:hover:before {
+            width: 100%;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+
+        tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+        button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #312929;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #000000;
+        transform: scale(1.05);
+    }
+
+    button:active {
+        background-color: #2e3741;
+    }
+
+        /* Modal Background */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.5); 
+        padding-top: 60px;
+        animation: fadeInModal 0.5s ease-in-out;
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto; 
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        width: 70%; 
+        max-width: 600px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        animation: fadeInContent 0.5s ease-in-out;
+    }
+
+    /* Close Button */
+    .close {
+        color: #888;
+        float: right;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Form Elements */
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+        /* @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes grow {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInContent {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        } */
+
+        
+    </style>
+    <script>
+        function openModal(companyId, guardCount, supervisorCount) {
+            document.getElementById('modal').style.display = "block";
+            document.getElementById('company_id').value = companyId;
+            document.getElementById('guard_count').value = guardCount;
+            document.getElementById('supervisor_count').value = supervisorCount;
+    
+            // Show supervisor section if supervisors exist
+            if (supervisorCount > 0) {
+                document.getElementById('supervisor_section').style.display = 'block';
+            } else {
+                document.getElementById('supervisor_section').style.display = 'none';
+            }
+            
+            // Ensure the supervisor amount input is handled
+            document.getElementById('amount_per_supervisor').value = document.getElementById('amount_per_supervisor').value || 0;
+    
+            calculateTotal();
+        }
+    
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+        }
+    
+        function calculateTotal() {
+            let guardCount = parseInt(document.getElementById('guard_count').value) || 0;
+            let amountPerGuard = parseFloat(document.getElementById('amount_per_guard').value) || 0;
+            let supervisorCount = parseInt(document.getElementById('supervisor_count').value) || 0;
+            let amountPerSupervisor = parseFloat(document.getElementById('amount_per_supervisor').value) || 0;
+    
+            let guardTotal = guardCount * amountPerGuard;
+            let supervisorTotal = supervisorCount * amountPerSupervisor;
+            let subTotal = guardTotal + supervisorTotal;
+            let cgst = 0.09 * subTotal;
+            let sgst = 0.09 * subTotal;
+            let totalAmount = subTotal + cgst + sgst;
+    
+            document.getElementById('sub_total').value = subTotal.toFixed(2);
+            document.getElementById('cgst').value = cgst.toFixed(2);
+            document.getElementById('sgst').value = sgst.toFixed(2);
+            document.getElementById('total_amount').value = totalAmount.toFixed(2);
+        }
+    </script>
+    
+</head>
+<body>
+    <div class="card">
+    <h1>Company List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Company Name</th>
+                <th>GST No.</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company_info in company_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{% url 'company_employees' company_info.company.id %}">
+                            {{ company_info.company.user.email }}
+                        </a>
+                    </td>
+                    <td>{{ company_info.company.gst_or_emergency }}</td>
+                    <td>
+                        <button onclick="openModal('{{ company_info.company.id }}', '{{ company_info.guard_count }}', '{{ company_info.supervisor_count }}')">
+                            Create Tax Invoice
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="card ">
+            <h2>Create Tax Invoice</h2>
+        </div>
+        <div class="card">
+            <form method="post" action="{% url 'create_tax_invoice' %}">
+                {% csrf_token %}
+                <input type="hidden" id="company_id" name="company_id">
+    
+                <div class="field-container">
+                    <div class="field">
+                        <label for="month">Select Month:</label>
+                        <select id="month" name="month">
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </div>
+    
+                    <div class="field">
+                        <label for="year">Year:</label>
+                        <input type="number" id="year" name="year">
+                    </div>
+                </div>
+    
+                <!-- Guard Section -->
+                <p>Number of Guards: <input type="text" id="guard_count" name="guard_count" readonly></p>
+                <p>Amount per Guard: <input type="number" id="amount_per_guard" name="amount_per_guard" oninput="calculateTotal()"></p>
+    
+                <!-- Supervisor Section -->
+                <div id="supervisor_section" style="display:none;">
+                    <p>Number of Supervisors: <input type="text" id="supervisor_count" name="supervisor_count" readonly></p>
+                    <p>Amount per Supervisor: <input type="number" id="amount_per_supervisor" name="amount_per_supervisor" oninput="calculateTotal()"></p>
+                </div>
+    
+                <!-- Totals Section -->
+                <p>Sub Total: <input type="text" id="sub_total" name="sub_total" readonly></p>
+                <p>CGST: <input type="text" id="cgst" name="cgst" readonly></p>
+                <p>SGST: <input type="text" id="sgst" name="sgst" readonly></p>
+                <p>Total Amount DUE: <input type="text" id="total_amount" name="total_amount" readonly></p>
+    
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    </div>
+</body>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+
+<style>
+   body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+}
+
+.card {
+    width: 95%;
+    margin: 2% auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Add this for positioning links */
+    animation: fadeIn 1s ease-in;
+}
+
+h1, p {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    animation: slideIn 1s ease-in-out;
+}
+
+h1 {
+    font-size: 2.5em;
+}
+
+p {
+    font-size: 1.2em;
+}
+
+form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="number"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+button[type="submit"], .card a {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* Remove underline from links */
+    display: inline-block; /* Ensure proper padding and alignment */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button[type="submit"]:hover, .card a:hover {
+    background-color: #555;
+    transform: scale(1.05);
+}
+
+.card a {
+    position: absolute; /* Position the links absolutely */
+    bottom: 20px; /* Space from bottom */
+    font-size: 1em; /* Slightly smaller font size */
+}
+
+.card a:first-of-type {
+    left: 20px; /* Left corner */
+}
+
+.card a:last-of-type {
+    right: 20px; /* Right corner */
+}
+
+.messages {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    color: #d9534f;
+}
+
+.messages li {
+    margin-bottom: 10px;
+}
+
+</style>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee List by Company</title>
+</head>
+<body>
+
+
+    <div class="card">
+        <h2>Request Advance Payment for {{ employee.first_name }} {{ employee.last_name }}</h2>
+    <br>
+        <p><strong>Basic Salary:</strong> {{ salary_details.basic_salary }}</p>
+    
+        
+
+<form method="post">
+    {% csrf_token %}
+    <label for="advance_amount">Advance Amount:</label>
+    <input type="number" id="advance_amount" name="advance_amount" min="0" required>
+    <button type="submit">Submit Request</button>
+</form>
+<a href="{% url 'admin_present' %}">Back to Previous Page</a>
+
+    
+        <!-- {% if messages %}
+            <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %} -->
+    
+        <a href="{% url 'admin_present' %}">Back to Employee List</a>
+    </div>
+
+</body>
+
+{% endblock content %}

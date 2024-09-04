@@ -1,0 +1,268 @@
+{% extends 'admin/basead.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .card {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in;
+    }
+
+    .card h1 {
+        text-align: center;
+        color: #333333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .form-group > div {
+        flex: 1;
+    }
+
+    label {
+        font-size: 14px;
+        color: #666;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+        border-color: #312929;
+        outline: none;
+        box-shadow: 0 0 8px rgba(49, 41, 41, 0.5);
+        transform: scale(1.02);
+    }
+
+  /* Button Container */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Individual Buttons */
+.btn-approve,
+.btn-reject {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-approve {
+    background-color: #28a745; /* Green for approve */
+    color: #fff;
+}
+
+.btn-approve:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.btn-approve:active {
+    background-color: #1e7e34; /* Even darker green on click */
+}
+
+.btn-reject {
+    background-color: #dc3545; /* Red for reject */
+    color: #fff;
+}
+
+.btn-reject:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+.btn-reject:active {
+    background-color: #bd2130; /* Even darker red on click */
+}
+
+    .form-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .form-group > div {
+        width: 48%;
+    }
+
+    .popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: none;
+        z-index: 1000;
+        animation: slideIn 1s ease-in-out;
+    }
+
+    .popup.error {
+        background-color: #dc3545;
+    }
+
+    .popup .close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    table {
+        width: 95%;
+        margin-left: 30px;
+        /* margin-right: 0px; */
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 20px;
+        animation: grow 1s ease-in-out;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    th, td {
+        padding: 20px;
+        text-align: left;
+        border-bottom: 1px solid #dddddd;
+        /* transition: background-color 0.3s ease-in-out;    */
+    }
+    th {
+        background-color: #312929;
+        color: #ffffff;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    tr:hover {
+        background-color: #e9ecef;
+    }
+    td {
+        position: relative;
+    }
+    td:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background-color: #000000;
+        /* transition: width 0.4s ease-in-out; */
+    }
+    td:hover:before {
+        width: 100%;
+    }
+    th:first-child {
+        border-top-left-radius: 10px;
+    }
+    th:last-child {
+        border-top-right-radius: 10px;
+    }
+    tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+    tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+</style>
+
+<body>
+    <div class="card">
+
+
+    <h1>Advance Payment Requests</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Employee</th>
+                    <th>Advance Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                <tr>
+                    <td><input type="checkbox" name="selected_requests" value="{{ request.pk }}"></td>
+                    <td>{{ request.employee }}</td>
+                    <td>{{ request.advance_payment }}</td>
+                    <td>{{ request.advance_request_status }}</td>
+                    <td>
+                        <form method="post" action="{% url 'approve_advance' request.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit"  class="btn-approve">Approve</button>
+                        </form>
+                        <form method="post" action="{% url 'reject_advance' request.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit"  class="btn-reject">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <br>
+        
+        <div class="button-container">
+            <button type="submit" name="action" value="approve" class="btn-approve">Approve Selected</button>
+            <button type="submit" name="action" value="reject" class="btn-reject">Reject Selected</button>
+        </div>
+    </form>
+</div>
+</body>
+{% endblock %}
+

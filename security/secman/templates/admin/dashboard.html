@@ -12,6 +12,18 @@
         grid-gap: 30px;
     }
 
+    .card {
+    width: 95%;
+    margin: 2% auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in;
+    position: relative; /* Enables positioning of the back link */
+    }
+
+
     .cardBox .card {
         position: relative;
         background: var(--white);
@@ -68,55 +80,170 @@
         max-width: 200px;
         max-height: 200px;
     }
+
+/* Css Pop up in birthday card */
+.birthday-container {
+    max-width: 950px;
+    margin: 20px auto;
+    padding: 20px;
+    background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1));
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    animation: pop-up 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+@keyframes pop-up {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.birthday-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.birthday-item {
+    padding: 12px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+.birthday-item:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.birthday-container h3 {
+    text-align: center;
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+/* @keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    } */
+}
+
+.birthday-container p {
+    text-align: center;
+    font-size: 1.5em;
+    color: #ffffff;
+    animation: fadeIn 1s ease-in-out forwards;
+}
 </style>
 
 <body>
+    <div class="card">
+    {% comment %} <div class="birthday-container">
+        {% if todays_birthdays %}
+            <h3>Today's Birthdays ({{ today }}):</h3>
+            <ul class="birthday-list">
+                {% for birthday in todays_birthdays %}
+                    <li class="birthday-item">{{ birthday.user_profile.user.email }} - {{ birthday.description }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No birthdays today.</p>
+        {% endif %}
+    </div>  {% endcomment %}
+
+     {% if todays_birthdays %}
+<div class="birthday-container">
+    <h3>Today's Birthdays </h3>
+    <ul class="birthday-list">
+        {% for birthday in todays_birthdays %}
+            <li class="birthday-item">{{ birthday.user_profile.user.first_name}} - {{ birthday.description }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %} 
+
+    
+<form method="GET">
+    <select name="company_id" onchange="this.form.submit()">
+        <option value="">All Companies</option>
+        {% for company in companies %}
+            <option value="{{ company.id }}" {% if selected_company and selected_company.id == company.id %}selected{% endif %}>
+                {{ company.user.email }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
 <div class="cardBox">
     <div class="card">
         <div>
-            <div class="numbers">All Companies</div>
-        </div>
-        <div class="iconBx">
-            <ion-icon name="eye-outline"></ion-icon>
+            <div class="numbers">{{ total_employees }}</div>
+            <div class="cardName">Total Employees</div>
         </div>
     </div>
-
     <div class="card">
         <div>
-            <div class="numbers">Total Employees</div>
-        </div>
-        <div class="iconBx">
-            <i class="fa-solid fa-users"></i>
+            <div class="numbers">{{ employees_present }}</div>
+            <div class="cardName">Employees Present</div>
         </div>
     </div>
-
     <div class="card">
         <div>
-            <div class="numbers">Employees Present</div>
-        </div>
-        <div class="iconBx">
-            <i class="fa-regular fa-thumbs-up"></i>
+            <div class="numbers">{{ employees_absent }}</div>
+            <div class="cardName">Employees Absent</div>
         </div>
     </div>
-
-    <div class="card">
-        <div>
-            <div class="numbers">Employees Absent</div>
-        </div>
-        <div class="iconBx">
-            <i class="fa-regular fa-thumbs-down"></i>
-        </div>
-    </div>
-
-    <div class="card chart-card">
-        <div>
-            <div class="numbers">Employee Statistics</div>
-        </div>
-        <div class="chart-container">
-            <canvas id="employeeChart" class="chart"></canvas>
-        </div>
-    </div>
+    <!-- Add more cards or charts as needed -->
 </div>
+<!-- <h2 class="section-title">Pending Advance Payment Requests</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Requested Amount</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in advance_requests %}
+        <tr>
+            <td>{{ request.employee.first_name }} {{ request.employee.last_name }}</td>
+            <td>{{ request.amount }}</td>
+            <td>
+                <form method="post" action="{% url 'approve_advance_request' request.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No pending advance requests.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table> -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -155,6 +282,7 @@
     });
 </script>
 
+</div>
 </body>
 
 {% endblock %}
