@@ -150,15 +150,12 @@ class Attendance(models.Model):
     check_in_time = models.TimeField(blank=True, null=True)
     check_out_time = models.TimeField(blank=True, null=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='A')
-    shift = models.ForeignKey(ShiftTime, on_delete=models.SET_NULL, null=True)  # Link to ShiftTime model
+    shift = models.CharField(max_length=20)  # Link to ShiftTime model
     notes = models.TextField(blank=True, null=True)  # Optional field to add any notes or remarks
 
-    def __str__(self):
-        return f"{self.employee.emp_id} - {self.date} - {self.shift.description}"
+    
 
-    class Meta:
-        unique_together = ('employee', 'date')  # Ensure that an employee cannot have duplicate attendance records on the same day
-        ordering = ['date']
+   
         
 
 

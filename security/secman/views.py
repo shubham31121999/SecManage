@@ -2344,6 +2344,41 @@ from django.http import HttpResponseBadRequest
 from .models import EmployeeJoining, ShiftTime, Attendance, UserProfile
 from django.utils import timezone
 
+# def markattendance(request):
+#     if request.method == 'GET':
+#         company_id = request.GET.get('company', None)
+#         date = request.GET.get('date', timezone.now().date())
+
+#         companies = UserProfile.objects.filter(user_type='company')
+
+#         if company_id:
+#             try:
+#                 company = UserProfile.objects.get(id=company_id, user_type='company')
+#                 employees = EmployeeJoining.objects.filter(company=company)
+#             except UserProfile.DoesNotExist:
+#                 messages.error(request, "Company not found")
+#                 employees = []
+#             shifts = ShiftTime.objects.all()
+#         else:
+#             employees = []
+#             shifts = []
+
+#         context = {
+#             'date': date,
+#             'company_id': company_id,
+#             'employees': employees,
+#             'shifts': shifts,
+#             'companies': companies,
+#         }
+
+#         return render(request, 'FO/markattendance.html', context)
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.utils import timezone
+from .models import EmployeeJoining, ShiftTime, Attendance, UserProfile
+
 def markattendance(request):
     if request.method == 'GET':
         company_id = request.GET.get('company', None)
@@ -2355,10 +2390,11 @@ def markattendance(request):
             try:
                 company = UserProfile.objects.get(id=company_id, user_type='company')
                 employees = EmployeeJoining.objects.filter(company=company)
+                shifts = ShiftTime.objects.all()
             except UserProfile.DoesNotExist:
                 messages.error(request, "Company not found")
                 employees = []
-            shifts = ShiftTime.objects.all()
+                shifts = []
         else:
             employees = []
             shifts = []
@@ -2373,108 +2409,43 @@ def markattendance(request):
 
         return render(request, 'FO/markattendance.html', context)
 
+    elif request.method == 'POST':
+        employee_id = request.POST.get('employee')
+        date = request.POST.get('date')
+        check_in_time = request.POST.get('check_in_time')
+        check_out_time = request.POST.get('check_out_time')
+        status = request.POST.get('status')
+        shift_name = request.POST.get('shift')
+        notes = request.POST.get('notes', '')
 
+        try:
+            employee = EmployeeJoining.objects.get(id=employee_id)
+            shift = ShiftTime.objects.get(name=shift_name)  # Retrieve ShiftTime instance by name
 
-            
+            # Create a new attendance record
+            Attendance.objects.create(
+                employee=employee,
+                date=date,
+                check_in_time=check_in_time,
+                check_out_time=check_out_time,
+                status=status,
+                shift=shift,
+                notes=notes
+            )
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
+            messages.success(request, "Attendance marked successfully!")
+        except EmployeeJoining.DoesNotExist:
+            messages.error(request, "Employee not found")
+        except ShiftTime.DoesNotExist:
+            messages.error(request, "Shift not found")
+        except Exception as e:
+            messages.error(request, f"Failed to mark attendance: {e}")
+
+        return redirect('markattendance')  # Adjust redirect as needed
+
+from django.shortcuts import redirect, render
 from django.http import HttpResponseBadRequest
-from .models import EmployeeJoining, ShiftTime, Attendance
-import json
-
-# def submit_attendance(request):
-#     if request.method == 'POST':
-#         date = request.POST.get('date')
-#         company_id = request.POST.get('company')
-
-#         if not date or not company_id:
-#             messages.error(request, 'Date and company are required.')
-#             return redirect('markattendance')
-
-#         employee_ids = [key.split('_')[1] for key in request.POST if key.startswith('status_')]
-#         for employee_id in employee_ids:
-#             status = request.POST.get(f'status_{employee_id}')
-#             shift_id = request.POST.get(f'shift_{employee_id}')
-#             check_in_time = request.POST.get(f'check_in_time_{employee_id}')
-#             check_out_time = request.POST.get(f'check_out_time_{employee_id}')
-#             notes = request.POST.get(f'notes_{employee_id}')
-
-#             if not status:
-#                 continue
-
-#             try:
-#                 employee = EmployeeJoining.objects.get(id=employee_id)
-#                 shift = ShiftTime.objects.get(id=shift_id) if shift_id else None
-#             except (EmployeeJoining.DoesNotExist, ShiftTime.DoesNotExist):
-#                 messages.error(request, f'Error processing data for employee {employee_id}.')
-#                 continue
-
-#             Attendance.objects.update_or_create(
-#                 employee=employee,
-#                 date=date,
-#                 defaults={
-#                     'status': status,
-#                     'shift': shift,
-#                     'check_in_time': check_in_time,
-#                     'check_out_time': check_out_time,
-#                     'notes': notes,
-#                 }
-#             )
-
-#         messages.success(request, 'Attendance has been successfully submitted.')
-#         return redirect(f'/markattendance/?date={date}&company={company_id}')
-#     else:
-#         return HttpResponseBadRequest("Invalid request method")
-
-from django.contrib import messages
-from django.http import HttpResponseBadRequest
-from .models import EmployeeJoining, ShiftTime, Attendance
-
-# def submit_attendance(request):
-#     if request.method == 'POST':
-#         date = request.POST.get('date')
-#         company_id = request.POST.get('company')
-
-#         if not date or not company_id:
-#             messages.error(request, 'Date and company are required.')
-#             return redirect('markattendance')
-
-#         employee_ids = [key.split('_')[1] for key in request.POST if key.startswith('status_')]
-#         for employee_id in employee_ids:
-#             status = request.POST.get(f'status_{employee_id}')
-#             shift_id = request.POST.get(f'shift_{employee_id}')
-#             check_in_time = request.POST.get(f'check_in_time_{employee_id}')
-#             check_out_time = request.POST.get(f'check_out_time_{employee_id}')
-#             notes = request.POST.get(f'notes_{employee_id}')
-
-#             if not status:
-#                 continue
-
-#             try:
-#                 employee = EmployeeJoining.objects.get(id=employee_id)
-#                 shift = ShiftTime.objects.get(id=shift_id) if shift_id else None
-#             except (EmployeeJoining.DoesNotExist, ShiftTime.DoesNotExist):
-#                 messages.error(request, f'Error processing data for employee {employee_id}.')
-#                 continue
-
-#             Attendance.objects.update_or_create(
-#                 employee=employee,
-#                 date=date,
-#                 defaults={
-#                     'status': status,
-#                     'shift': shift,
-#                     'check_in_time': check_in_time,
-#                     'check_out_time': check_out_time,
-#                     'notes': notes,
-#                 }
-#             )
-
-#         messages.success(request, 'Attendance has been successfully submitted.')
-#         return redirect(f'/markattendance/?date={date}&company={company_id}')
-#     else:
-#         return HttpResponseBadRequest("Invalid request method")
-
+from .models import Attendance, ShiftTime
 
 def submit_attendance(request):
     if request.method == 'POST':
@@ -2482,47 +2453,130 @@ def submit_attendance(request):
         company_id = request.POST.get('company')
 
         if not date or not company_id:
-            messages.error(request, 'Date and company are required.')
-            return redirect('markattendance')
+            return HttpResponseBadRequest("Missing date or company")
 
-        employee_ids = [key.split('_')[1] for key in request.POST if key.startswith('status_')]
-        
-        for employee_id in employee_ids:
+        # Process each employee
+        for employee_id in request.POST.getlist('employee_ids'):  # Make sure employee IDs are included in the form
             status = request.POST.get(f'status_{employee_id}')
             shift_id = request.POST.get(f'shift_{employee_id}')
             notes = request.POST.get(f'notes_{employee_id}')
 
-            if not status:
-                continue
+            if not shift_id:  # Validate shift_id
+                continue  # Skip if no shift_id is provided
 
             try:
-                employee = EmployeeJoining.objects.get(id=employee_id)
-                shift = ShiftTime.objects.get(id=shift_id) if shift_id else None
+                shift = ShiftTime.objects.get(id=shift_id)
+                intime = shift.intime
+                outtime = shift.outtime
+            except ShiftTime.DoesNotExist:
+                intime = None
+                outtime = None  # Handle this case appropriately
 
-                # Set check-in and check-out times based on the selected shift
-                check_in_time = shift.intime if shift else None
-                check_out_time = shift.outtime if shift else None
+            # Create a new attendance record
+            Attendance.objects.create(
+                employee_id=employee_id,
+                date=date,
+                status=status,
+                shift=shift,
+                check_in_time=intime,
+                check_out_time=outtime,
+                notes=notes
+            )
 
-                Attendance.objects.update_or_create(
-                    employee=employee,
-                    date=date,
-                    defaults={
-                        'status': status,
-                        'shift': shift,
-                        'check_in_time': check_in_time,
-                        'check_out_time': check_out_time,
-                        'notes': notes,
-                    }
-                )
-
-            except (EmployeeJoining.DoesNotExist, ShiftTime.DoesNotExist):
-                messages.error(request, f'Error processing data for employee {employee_id}.')
-                continue
-
-        messages.success(request, 'Attendance has been successfully submitted.')
-        return redirect(f'/markattendance/?date={date}&company={company_id}')
+        return redirect('markattendance')
     else:
-        return HttpResponseBadRequest("Invalid request method")
+        return HttpResponseBadRequest("Invalid request method")        
+
+# from django.shortcuts import render, redirect
+# from django.contrib import messages
+# from django.http import HttpResponseBadRequest
+# from .models import EmployeeJoining, ShiftTime, Attendance
+# import json
+
+# def submit_attendance(request):
+#     if request.method == 'POST':
+#         date = request.POST['date']
+#         company_id = request.POST['company']
+
+#         # Collect all form data
+#         for employee_id in request.POST.getlist('employee_ids'):
+#             status = request.POST.get(f'status_{employee_id}')
+#             shift_id = request.POST.get(f'shift_{employee_id}')
+#             notes = request.POST.get(f'notes_{employee_id}')
+#             check_in_time = request.POST.get(f'check_in_time_{employee_id}')
+#             check_out_time = request.POST.get(f'check_out_time_{employee_id}')
+
+#             # Fetch the ShiftTime description or ID to save in shift field
+#             try:
+#                 shift = ShiftTime.objects.get(id=shift_id)
+#                 shift_description = shift.description
+#             except ShiftTime.DoesNotExist:
+#                 shift_description = ''
+
+#             # Create or update attendance record
+#             Attendance.objects.create(
+#                 employee_id=employee_id,
+#                 date=date,
+#                 check_in_time=check_in_time,
+#                 check_out_time=check_out_time,
+#                 status=status,
+#                 shift=shift_description,  # Save shift description or ID
+#                 notes=notes
+#             )
+
+#         return redirect('markattendance')
+
+from django.contrib import messages
+from django.http import HttpResponseBadRequest
+from .models import EmployeeJoining, ShiftTime, Attendance
+
+# def submit_attendance(request):
+#     if request.method == 'POST':
+#         date = request.POST.get('date')
+#         company_id = request.POST.get('company')
+
+#         if not date or not company_id:
+#             messages.error(request, 'Date and company are required.')
+#             return redirect('markattendance')
+
+#         employee_ids = [key.split('_')[1] for key in request.POST if key.startswith('status_')]
+#         for employee_id in employee_ids:
+#             status = request.POST.get(f'status_{employee_id}')
+#             shift_id = request.POST.get(f'shift_{employee_id}')
+#             check_in_time = request.POST.get(f'check_in_time_{employee_id}')
+#             check_out_time = request.POST.get(f'check_out_time_{employee_id}')
+#             notes = request.POST.get(f'notes_{employee_id}')
+
+#             if not status:
+#                 continue
+
+#             try:
+#                 employee = EmployeeJoining.objects.get(id=employee_id)
+#                 shift = ShiftTime.objects.get(id=shift_id) if shift_id else None
+#             except (EmployeeJoining.DoesNotExist, ShiftTime.DoesNotExist):
+#                 messages.error(request, f'Error processing data for employee {employee_id}.')
+#                 continue
+
+#             Attendance.objects.update_or_create(
+#                 employee=employee,
+#                 date=date,
+#                 defaults={
+#                     'status': status,
+#                     'shift': shift,
+#                     'check_in_time': check_in_time,
+#                     'check_out_time': check_out_time,
+#                     'notes': notes,
+#                 }
+#             )
+
+#         messages.success(request, 'Attendance has been successfully submitted.')
+#         return redirect(f'/markattendance/?date={date}&company={company_id}')
+#     else:
+#         return HttpResponseBadRequest("Invalid request method")
+
+
+
+
 
 
 

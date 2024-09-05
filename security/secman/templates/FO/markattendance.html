@@ -145,6 +145,11 @@
         <input type="hidden" name="date" value="{{ date }}">
         <input type="hidden" name="company" value="{{ company_id }}">
     
+        <!-- Include hidden inputs for employee IDs -->
+        {% for employee in employees %}
+            <input type="hidden" name="employee_ids" value="{{ employee.id }}">
+        {% endfor %}
+    
         <table>
             <thead>
                 <tr>
